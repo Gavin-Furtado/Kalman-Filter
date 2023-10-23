@@ -4,11 +4,20 @@
 
 import numpy as np
 
+# Defining matrix A
 A = np.array([[2,4],
               [5,3]])
-A = np.matrix(A)
-B = np.multiply(A,A)
 
-print(B)
-#learning to pull request from vscode
+# Defining matrix B
+B = np.array([[4,1],
+              [7,9]])
 
+# printing matrix A
+print(f'The Matrix A = {A}')
+
+# priniting matrix B
+print(f'The Matrix B = {B}')
+
+# multiplication of matrix A x B
+print(f'Matrix multiplication using numpy dot funtion = {np.dot(A,B)}')
+print(f'Matrix multiplication using @ = {A @ B}')
