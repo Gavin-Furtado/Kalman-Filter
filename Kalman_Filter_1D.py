@@ -1,4 +1,4 @@
-from Math import *
+from math_functions_1D import *
 
 #########################################################
 ### Solving a one dimensional temperature example
