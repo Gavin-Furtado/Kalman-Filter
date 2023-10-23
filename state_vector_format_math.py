@@ -3,3 +3,12 @@
 ### matrix format
 
 import numpy as np
+
+A = np.array([[2,4],
+              [5,3]])
+A = np.matrix(A)
+B = np.multiply(A,A)
+
+print(B)
+
+
