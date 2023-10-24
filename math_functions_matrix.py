@@ -21,3 +21,17 @@ print(f'The Matrix B = {B}')
 # multiplication of matrix A x B
 print(f'Matrix multiplication using numpy dot funtion = {np.dot(A,B)}')
 print(f'Matrix multiplication using @ = {A @ B}')
+
+## State Matrix ##
+
+## Process Covariance Matrix ##
+
+## Predicted State ##
+
+## Kalman Gain Matrix ##
+
+## Matrix A (3x3) ##
+
+## Matrix B (3x3) ##
+
+## Matrix H (3x3) ##
