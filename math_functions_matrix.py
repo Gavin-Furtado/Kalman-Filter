@@ -26,6 +26,8 @@ import numpy as np
 
 ################# The Aeroplane example ##############
 
+##### Defining matrices #######
+##### Need to make this reusable ######
 ## Matrix A (2x2) ##
 def matrix_A(delta_T):
     A = np.array([[1,delta_T],
@@ -43,17 +45,20 @@ def matrix_H():
     return np.array([[1,0],
                      [0,1]])
 
+## Errors in measurement ##
+## delta_x, delta_Vx
 ## Matrix R (2x2) ##
-def matrix_R():
-    return np.array([[25**2,0],
-                     [0,6**2]])  
+def matrix_R(position_err,velocity_err):
+    return np.array([[position_err**2,0],
+                     [0,velocity_err**2]])  
 
+#===============================================================
+## Needs work
 ## State Matrix ##
 def state_matrix(position, velocity):
     return np.array([[position],
               [velocity]])
     
-
 ## Control Matrix ##
 def control_matrix(acceleration):
     return np.array([acceleration])
@@ -61,6 +66,30 @@ def control_matrix(acceleration):
 ## Noise Matrix ##
 def noise_matrix(noise):
     return np.array([noise])
+#=======================================================
+
+
+################# START-OF-STEP-1 ##########################
+########### Prediction of new measurements and errors in prediction/process ##
+
+def X_predicted(delta_T, position, velocity, acceleration,noise):    
+    '''
+    This function predicts the state matrix
+    In simple terms predicts the next value of the measurement 
+    that would come from the sensors.
+
+    The formula in matrix format;
+    Xk (predicted) = A.Xk-1 + Buk + wk
+
+    inputs = sampling time, position, velocity, acceleration, noise
+    output = position, velocity (predicted)  
+    '''
+    term_1 = matrix_A(delta_T) @ state_matrix(position,velocity)
+    term_2 = (matrix_B(delta_T) @ control_matrix(acceleration)).reshape(2,1) # Try to understand why reshaping was required
+    term_3 = noise_matrix(noise)
+    
+    predicted_state = term_1 + term_2 +term_3
+    return predicted_state
 
 ######## Process Covariance Matrix ########
 ## We assume non-diagonal elements to be zeo, and there is no correlation between
@@ -80,37 +109,68 @@ def P_matrix_predicted(delta_T, position_process_error,velocity_process_error):
     term_1[1][0]=0
     return term_1
 
-## Step 1 ##
-## Predicted State ##
-## Xk (predicted) = A.Xk-1 + Buk + wk
-def X_predicted(delta_T, position, velocity, acceleration,noise):
-    
-    term_1 = matrix_A(delta_T) @ state_matrix(position,velocity)
-    term_2 = (matrix_B(delta_T) @ control_matrix(acceleration)).reshape(2,1) # Try to understand why reshaping was required
-    term_3 = noise_matrix(noise)
-    
-    predicted_state = term_1 + term_2 +term_3
-    return predicted_state
+def P_predicted(delta_T, P_prev):
+    '''
+    This function calculate predicted process covariance martix
+    In simple terms calculates the error in estimates or process
 
+    The formula in matrix form is;
+    Pkp = A.Pk-1.A^T + Qk
 
-## Kalman Gain Matrix ##
-def Kalman_Matrix(P_matrix_predicted):
-    term_1 = P_matrix_predicted @ matrix_H().T
-    term_2 = matrix_H() @ P_matrix_predicted @ matrix_H().T
-    term_3 = matrix_R()
-    # denominator = term_2 + term_3
-    return np.round(term_1 @ np.linalg.inv(term_2 + term_3),3)
-    # return np.divide(term_1,denominator)
+    inputs = matrix A, previous predicted covarinace matrix
+    output = predicted covariance matrix
+    '''
+    term_1 = matrix_A(delta_T) @ P_prev @ matrix_A(delta_T).T
+    # To simplify the calculations
+    term_1[0][1]=0
+    term_1[1][0]=0
+    return term_1 
 
-## New measurements or observations ##
-## Here the Z matrix represents the errror in the measurement
+################# END-OF-STEP-1 ##########################
+
+################# START-OF-STEP-2 ##########################
+
+######### New measurements or observations ##########
+## Here the Z matrix represents the error in the measurement
 ## lets assume Z to be 0
+
 def new_measurements(position,velocity):
+    '''
+    Takes the measurement data from the sensors and
+    converts them into a matrix format
+
+    input = position, velocity
+    output = [[position], [velocity]]
+    '''
     C = np.array([[1,0],
               [0,1]])
     prev_Y = np.array([[position],
                        [velocity]])
     return C @ prev_Y
+
+################# END-OF-STEP-2 ##########################
+
+
+################# START-OF-STEP-3 ##########################
+
+## Kalman Gain Matrix ##
+def Kalman_Matrix(P_matrix_predicted):
+    '''
+    Calculates the kalman gain matrix,
+    Kalman gain determines the amount of weight given 
+    to the measured value or the predicted value.
+
+    inputs = predicted process covariance matrix, errors in observation
+    output = Kalman Gain Matrix 
+    '''
+    term_1 = P_matrix_predicted @ matrix_H().T
+    term_2 = matrix_H() @ P_matrix_predicted @ matrix_H().T
+    term_3 = matrix_R(25,6)
+    # denominator = term_2 + term_3
+    return np.round(term_1 @ np.linalg.inv(term_2 + term_3),3)
+    # return np.divide(term_1,denominator)
+
+################# END-OF-STEP-3 ##########################
 
 ### Testing the functions ###
 print(f'Predicted State Matrx = ') 
@@ -150,17 +210,17 @@ print(f'Updated Process Covariance Matrix is')
 current_process_covariance = updated_process_covariance()
 print(current_process_covariance)
 
-### 2nd Iteration ###
-## Predicted State Matrix ##
-state_matrix_2 = X_predicted(1,current_state_matrix[0][0],
-            current_state_matrix[1][0],2,0)
-print(f'======2nd iteration======')
-print(f'==State Matrix==')
-print(state_matrix_2)
+# ### 2nd Iteration ###
+# ## Predicted State Matrix ##
+# state_matrix_2 = X_predicted(1,current_state_matrix[0][0],
+#             current_state_matrix[1][0],2,0)
+# print(f'======2nd iteration======')
+# print(f'==State Matrix==')
+# print(state_matrix_2)
 
-## Predicted Process Covarince Matrix ##
-predicted_covar_2 = P_matrix_predicted(1,current_process_covariance[0][0],
-                                       current_process_covariance[1][1])
-print(f'======2nd iteration======')
-print(f'==Predicted Process Covariance Matrix==')
-print(predicted_covar_2)
+# ## Predicted Process Covarince Matrix ##
+# predicted_covar_2 = P_matrix_predicted(1,current_process_covariance[0][0],
+#                                        current_process_covariance[1][1])
+# print(f'======2nd iteration======')
+# print(f'==Predicted Process Covariance Matrix==')
+# print(predicted_covar_2)
