@@ -114,14 +114,53 @@ def new_measurements(position,velocity):
 
 ### Testing the functions ###
 print(f'Predicted State Matrx = ') 
-print(X_predicted(1,4000,280,2,0))
+predicted_state_matrix = X_predicted(1,4000,280,2,0)
+print(predicted_state_matrix)
 
 print(f'Predicted Covariance matrix = ')
 covariance_predicted = P_matrix_predicted(1,20,5)
 print(covariance_predicted)
 
 print(f'Kalman Gain matrix = ')
-print(Kalman_Matrix(covariance_predicted))
+kalman_gain_matrix = Kalman_Matrix(covariance_predicted)
+print(kalman_gain_matrix)
 
 print(f'New measurement matrix')
-print(new_measurements(4260,282))
+new_measured_values = new_measurements(4260,282)
+print(new_measured_values)
+
+## Calculating current state ##
+def current_state():
+    term_1 = matrix_H() @ predicted_state_matrix
+    term_2 = new_measured_values - term_1
+    term_3 = kalman_gain_matrix @ term_2
+    return predicted_state_matrix + term_3
+
+print(f'Current/updated state matrix')
+current_state_matrix = current_state()
+print(current_state_matrix)
+
+## Updating process covariance matrix ##
+def updated_process_covariance():
+    term_1 = kalman_gain_matrix @ matrix_H()
+    term_2 = np.array([[1,0],[0,1]]) - term_1
+    return term_2 @covariance_predicted
+
+print(f'Updated Process Covariance Matrix is')
+current_process_covariance = updated_process_covariance()
+print(current_process_covariance)
+
+### 2nd Iteration ###
+## Predicted State Matrix ##
+state_matrix_2 = X_predicted(1,current_state_matrix[0][0],
+            current_state_matrix[1][0],2,0)
+print(f'======2nd iteration======')
+print(f'==State Matrix==')
+print(state_matrix_2)
+
+## Predicted Process Covarince Matrix ##
+predicted_covar_2 = P_matrix_predicted(1,current_process_covariance[0][0],
+                                       current_process_covariance[1][1])
+print(f'======2nd iteration======')
+print(f'==Predicted Process Covariance Matrix==')
+print(predicted_covar_2)
