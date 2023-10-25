@@ -154,18 +154,18 @@ def new_measurements(position,velocity):
 ################# START-OF-STEP-3 ##########################
 
 ## Kalman Gain Matrix ##
-def Kalman_Matrix(P_matrix_predicted):
+def Kalman_Matrix(P_matrix_predicted,position_err,velocity_err):
     '''
     Calculates the kalman gain matrix,
     Kalman gain determines the amount of weight given 
     to the measured value or the predicted value.
 
-    inputs = predicted process covariance matrix, errors in observation
+    inputs = predicted process covariance matrix, errors in observation(position,velocity)
     output = Kalman Gain Matrix 
     '''
     term_1 = P_matrix_predicted @ matrix_H().T
     term_2 = matrix_H() @ P_matrix_predicted @ matrix_H().T
-    term_3 = matrix_R(25,6)
+    term_3 = matrix_R(position_err,velocity_err)
     # denominator = term_2 + term_3
     return np.round(term_1 @ np.linalg.inv(term_2 + term_3),3)
     # return np.divide(term_1,denominator)
@@ -182,7 +182,7 @@ covariance_predicted = P_matrix_predicted(1,20,5)
 print(covariance_predicted)
 
 print(f'Kalman Gain matrix = ')
-kalman_gain_matrix = Kalman_Matrix(covariance_predicted)
+kalman_gain_matrix = Kalman_Matrix(covariance_predicted,25,6)
 print(kalman_gain_matrix)
 
 print(f'New measurement matrix')
