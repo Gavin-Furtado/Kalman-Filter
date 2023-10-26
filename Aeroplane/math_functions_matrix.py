@@ -189,26 +189,53 @@ print(f'New measurement matrix')
 new_measured_values = new_measurements(4260,282)
 print(new_measured_values)
 
-## Calculating current state ##
-def current_state():
-    term_1 = matrix_H() @ predicted_state_matrix
-    term_2 = new_measured_values - term_1
-    term_3 = kalman_gain_matrix @ term_2
-    return predicted_state_matrix + term_3
+################# START-OF-STEP-4 ##########################
 
-print(f'Current/updated state matrix')
-current_state_matrix = current_state()
-print(current_state_matrix)
+#### Updating the state matrix and process covarinace matrix #######
+## Calculating current state ##
+def calculate_updated_state_matrix(matrix_H, new_measurements, k_gain, predicted_state):
+    '''
+    This function updates the sate matrix for the next iteration;
+
+    inputs: predicted state, H-matrix, new measured values,
+            kalman gain
+    output: updated state matrix
+    '''
+    term_1 = matrix_H @ predicted_state
+    term_2 = new_measurements - term_1
+    term_3 = k_gain @ term_2
+    updated_state_matrix = predicted_state + term_3
+    return updated_state_matrix
 
 ## Updating process covariance matrix ##
-def updated_process_covariance():
-    term_1 = kalman_gain_matrix @ matrix_H()
+def _calculate_updated_process_covariance(k_gain,matrix_H,predicted_process_covar):
+    '''
+    This function updates the process covariance matrix
+
+    inputs: kalman gain, H-matrix, predicted covarinace matrix
+    
+    Local variables: Identity matrix,
+            
+    output: Updated covariance matrix
+    '''
+    term_1 = k_gain @ matrix_H
     term_2 = np.array([[1,0],[0,1]]) - term_1
-    return term_2 @covariance_predicted
+    updated_process_covariance = term_2 @ predicted_process_covar
+    return updated_process_covariance
+
+################# END-OF-STEP-4 ##########################
+
+print(f'Current/updated state matrix')
+updated_state_matrix = calculate_updated_state_matrix(matrix_H(), new_measured_values, 
+                                                      kalman_gain_matrix, 
+                                                      predicted_state_matrix)
+print(updated_state_matrix)
 
 print(f'Updated Process Covariance Matrix is')
-current_process_covariance = updated_process_covariance()
-print(current_process_covariance)
+updated_process_covariance = _calculate_updated_process_covariance(kalman_gain_matrix,
+                                                                   matrix_H(),
+                                                                   covariance_predicted)
+print(updated_process_covariance)
 
 # ### 2nd Iteration ###
 # ## Predicted State Matrix ##
