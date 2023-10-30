@@ -1,5 +1,6 @@
 from math_functions_matrix import *
 import matplotlib.pyplot as plt
+from tabulate import tabulate
 
 ## Measurements ##
 measurement_position = [4000,4260,4550,4860,5110]
@@ -141,7 +142,9 @@ for i in range(5):
 plt.plot([0,1,2,3,4],measurement_position,'ro')
 plt.plot([0,1,2,3,4],prediction['position'],'g^')
 plt.plot([0,1,2,3,4],kalman_filter['position'],'r-')
-plt.grid(which='both')
+plt.grid(which='major',color='#DDDDDD' , linewidth=0.9)
+plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.6)
+plt.minorticks_on()
 plt.xlabel('Time period')
 plt.ylabel('Position (m)')
 plt.legend(['measurments','predictions','kalman filter'])
@@ -151,11 +154,17 @@ plt.show()
 plt.plot([0,1,2,3,4],measurement_velocity,'ro')
 plt.plot([0,1,2,3,4],prediction['velocity'],'g^')
 plt.plot([0,1,2,3,4],kalman_filter['velocity'],'r-')
-plt.grid(which='both')
+plt.grid(which='major',color='#DDDDDD' , linewidth=0.9)
+plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.6)
+plt.minorticks_on()
 plt.xlabel('Time period')
 plt.ylabel('Velocity (m/s^2)')
 plt.legend(['measurments','predictions','kalman filter'])
 plt.show()
 
-print(prediction)
-print(kalman_filter)
+print(f'Predicted values')
+print(tabulate(prediction, headers='keys', tablefmt= 'pretty'))
+
+print(f'Kalman filter values')
+print(tabulate(kalman_filter, headers='keys', tablefmt= 'pretty'))
+
