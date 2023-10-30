@@ -6,7 +6,7 @@ measurement_position = [4000,4260,4550,4860,5110]
 measurement_velocity = [280,282,285,286,290]
 
 ## Estimated values from Kalman filter ##
-estimates = {'position':[200], 'velocity':[10]}
+estimates = {'position':[], 'velocity':[]}
 print(estimates)
 
 ## Step - Initialization ##
@@ -102,7 +102,8 @@ for i in range(5):
                                                                             predicted_process_covariance_matrix)
     
     ## Updating estimates dictionary
-    #updated_state_matrix[1][0]
+    estimates['position'].append(updated_state_matrix[0][0])
+    estimates['velocity'].append(updated_state_matrix[1][0])
 
     ## Updated become previous ##
     previous_state_matrix = updated_state_matrix
@@ -133,9 +134,9 @@ for i in range(5):
 
 
 ## Plotting graphs ##
-# plt.plot(measurement_position,measurement_velocity,'g^')
-# plt.xlabel('Position (m)')
-# plt.ylabel('Velocity (m/s^2)')
-# plt.legend('measured values')
-# plt.show()
-
+plt.plot(measurement_position,measurement_velocity,'g^')
+plt.plot(estimates['position'],estimates['velocity'],'ro')
+plt.xlabel('Position (m)')
+plt.ylabel('Velocity (m/s^2)')
+plt.legend('measured values')
+plt.show()
