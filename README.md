@@ -9,3 +9,6 @@ There would be multiple scripts that perform basic mathematical computations suc
 The project time line would start from 10 October 2023 till 31 December 2023.
 
 ## Links
+
+[Michel Van Biezen - Lectures](https://www.youtube.com/watch?v=CaCcOwJPytQ&list=PLX2gX-ftPVXU3oUFNATxGXY90AULiqnWT&index=1)
+
