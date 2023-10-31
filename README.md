@@ -1,5 +1,5 @@
 # Kalman-Filter
-![Image](https://www.ntuclearninghub.com/documents/39367/4216797/Python-Symbol.png/369e410e-a90f-f887-c2dc-61f7ef761476/)
+
 This repository is for learning about Kalman filters.
 
 The plan is to solve few real world examples like temperature sensors, airplane velocity and position examples.
