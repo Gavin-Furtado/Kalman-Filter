@@ -1,3 +1,14 @@
+'''
+This module performs the computation of the 
+Kalman filter for two variables. In this 
+example we have considered the position and
+valocity of an aeroplane
+
+Author: Gavin Furtado
+
+Reference: Michel Van Biezen lectures
+'''
+
 from math_functions_matrix import *
 import matplotlib.pyplot as plt
 from tabulate import tabulate
@@ -44,15 +55,16 @@ for i in range(4):
     measured_values = measurements(measurement_position[i],measurement_velocity[i])
 
     ## Step 3 - Kalman Gain ##
-    kalman_gain_matrix = Kalman_Matrix(predicted_process_covariance_matrix,25,6)
+    kalman_gain_matrix = kalman_matrix(predicted_process_covariance_matrix,25,6)
 
     ## Step 4 - Updation ##
     # Updated Current State Matrix
-    updated_state_matrix = calculate_updated_state_matrix(matrix_H(),measured_values,kalman_gain_matrix,predicted_state_matrix)
+    updated_state_matrix = calculate_updated_state_matrix(
+        matrix_H(),measured_values,kalman_gain_matrix,predicted_state_matrix)
 
     # Updated Process Covariance Matrix
-    updated_process_covariance_matrix = calculate_updated_process_covariance(kalman_gain_matrix,matrix_H(),
-                                                                            predicted_process_covariance_matrix)
+    updated_process_covariance_matrix = calculate_updated_process_covariance(
+        kalman_gain_matrix,matrix_H(),predicted_process_covariance_matrix)
     
     ## storing kalman filter values in dictionary ##
     kalman_filter['position'].append(updated_state_matrix[0][0])
@@ -63,26 +75,26 @@ for i in range(4):
     previous_process_covariance_matrix = updated_process_covariance_matrix
 
     print(f'+++++++++++++++++++Iteration number {i} ++++++++++++++++++')
-    print(f'=========Prediction==================')
-    print(f'The predicted state matrix is')
+    print('=========Prediction==================')
+    print('The predicted state matrix is')
     print(predicted_state_matrix)
 
-    print(f'The predicted process covariance matrix is')
+    print('The predicted process covariance matrix is')
     print(predicted_process_covariance_matrix)
 
-    print(f'=========Measurement==================')
-    print(f'The measurement matrix is')
+    print('=========Measurement==================')
+    print('The measurement matrix is')
     print(measured_values)
 
-    print(f'=========Kalman Gain==================')
-    print(f'The kalman gain matrix is')
+    print('=========Kalman Gain==================')
+    print('The kalman gain matrix is')
     print(kalman_gain_matrix)
 
-    print(f'=========Updation==================')
-    print(f'The updated state matrix is')
+    print('=========Updation==================')
+    print('The updated state matrix is')
     print(updated_state_matrix)
 
-    print(f'The updated process covariance matrix is')
+    print('The updated process covariance matrix is')
     print(updated_process_covariance_matrix)
 
 

@@ -1,6 +1,12 @@
-### This python file consists of mathematical formulae 
-### of Kalman filter algorithms in the state vector/ 
-### matrix format
+''' 
+This python file consists of mathematical formulae 
+of Kalman filter algorithms in the state vector/ 
+matrix format
+
+Author: Gavin Furtado
+
+Reference: Michel Van Biezen lectures
+''' 
 
 import numpy as np
 
@@ -10,18 +16,30 @@ import numpy as np
 ##### Need to make this reusable ######
 ## Matrix A (2x2) ##
 def matrix_A(delta_T):
+    '''
+    This function creates the matrix A required
+    for further calculations
+    '''
     A = np.array([[1,delta_T],
                   [0,1]])
     return A
 
 ## Matrix B (2x1) ##
 def matrix_B(delta_T):
+    '''
+    This function creates the matrix B required
+    for further calculations
+    '''
     B = np.array([[0.5*delta_T],
                   [delta_T]])
     return B
 
 ## Matrix H (2x2) ##
 def matrix_H():
+    '''
+    This function creates the matrix H required
+    for further calculations
+    '''
     return np.array([[1,0],
                      [0,1]])
 
@@ -29,6 +47,10 @@ def matrix_H():
 ## delta_x, delta_Vx
 ## Matrix R (2x2) ##
 def matrix_R(position_err,velocity_err):
+    '''
+    This function creates the matrix R required
+    for further calculations
+    '''
     return np.array([[position_err**2,0],
                      [0,velocity_err**2]])  
 
@@ -37,14 +59,23 @@ def matrix_R(position_err,velocity_err):
 
 ######## Initial State Matrix ##############
 def X_initial(position,acceleration):
+    '''
+    This function creates initial state matrix: X
+    '''
     return np.array([[position],[acceleration]])
 
 ## Initial Control Matrix ##
 def U_initial(acceleration):
+    '''
+    This function creates initial control matrix: B
+    '''
     return np.array([acceleration])
 
 ## Initial Noise Matrix ##
 def W_initial(noise):
+    '''
+    This function creates initial noise matrix: W
+    '''
     return np.array([noise])
     
 ######## Initial Process Covariance Matrix ########
@@ -53,7 +84,7 @@ def W_initial(noise):
 ## the calculations simpler
 def P_initial(position_process_error, velocity_process_error):
     '''
-    Initial values for process covariance matrix
+    This function creates initial process covariance matrix: P
     '''
     return np.array([[position_process_error**2, 0],
                      [0, velocity_process_error**2]])
@@ -77,7 +108,8 @@ def X_predicted(delta_T, X_prev, control_matrix, noise_matrix):
     output = position, velocity (predicted)  
     '''
     term_1 = matrix_A(delta_T) @ X_prev
-    term_2 = (matrix_B(delta_T) @ control_matrix).reshape(2,1) # Try to understand why reshaping was required
+    term_2 = (matrix_B(delta_T) @ control_matrix).reshape(2,1) 
+    # Try to understand why reshaping was required
     term_3 = noise_matrix
     
     return term_1 + term_2 +term_3
@@ -130,7 +162,7 @@ def measurements(position,velocity):
 ################# START-OF-STEP-3 ##########################
 
 ## Kalman Gain Matrix ##
-def Kalman_Matrix(P_matrix_predicted,position_err,velocity_err):
+def kalman_matrix(P_matrix_predicted,position_err,velocity_err):
     '''
     Calculates the kalman gain matrix,
     Kalman gain determines the amount of weight given 
