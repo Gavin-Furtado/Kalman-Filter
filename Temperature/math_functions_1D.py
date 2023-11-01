@@ -1,14 +1,21 @@
-## This script consists of all the mathematical formulae 
-## required for Kalman filter calculations
+''' 
+This script consists of all the mathematical formulae 
+required for Kalman filter calculations.
+
+It is used for 1 dimension or variable example in Kalman
+filtering process, for example temperature calculations
+
+Author: Gavin Furtado
+'''
 
 ## Math equation ##
 ## KG = Eest / (Eest + Emea) ##
-def kalman_gain(E_est:float,E_mea:float)->float:
+def kalman_gain(error_in_est:float,error_in_mea:float)->float:
     '''This function calculates the Kalman gain
     input: Error in estimate, Error in measurement
     output: Kalman gain
     '''
-    gain = E_est/(E_est + E_mea)
+    gain = error_in_est/(error_in_est + error_in_mea)
     return  round(gain,2)
 
 ## Math equation ##
