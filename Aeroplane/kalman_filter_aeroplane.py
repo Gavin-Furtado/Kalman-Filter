@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt # pylint: disable=wildcard-import import-error
 # from tabulate import tabulate
 
 ## Measurements ##
-measurement_position = [4260, 4550, 4860, 5110, 5320, 5033, 5894, 5721]
+measurement_position = [4260, 4450, 4720, 5110, 5320, 5293, 5894, 5721]
 measurement_velocity = [282, 285, 286, 290, 285, 293, 298, 297]
 
 ## Estimated values from Kalman filter ##
@@ -103,7 +103,7 @@ for i in range(8):
 
 
 ## Plotting graphs ##
-plt.plot([0, 1, 2, 3,4,5,6,7], measurement_position, 'ro')
+plt.plot([0, 1, 2, 3,4,5,6,7], measurement_position, 'ro',color='#FC9C21')
 plt.plot([0, 1, 2, 3,4,5,6,7], prediction['position'], 'g^')
 plt.plot([0, 1, 2, 3,4,5,6,7], kalman_filter['position'], 'r-')
 plt.grid(which='major', color='#DDDDDD', linewidth=0.9)
@@ -112,10 +112,12 @@ plt.minorticks_on()
 plt.xlabel('Time period')
 plt.ylabel('Position (m)')
 plt.legend(['measurments', 'predictions', 'kalman filter'])
+plt.title('Data from position sensor')
+plt.savefig('position_graph')
 plt.show()
 
 # # velocity graph
-plt.plot([0, 1, 2, 3,4,5,6,7], measurement_velocity, 'ro')
+plt.plot([0, 1, 2, 3,4,5,6,7], measurement_velocity, 'ro', color='#FC9C21')
 plt.plot([0, 1, 2, 3,4,5,6,7], prediction['velocity'], 'g^')
 plt.plot([0, 1, 2, 3,4,5,6,7], kalman_filter['velocity'], 'r-')
 plt.grid(which='major', color='#DDDDDD', linewidth=0.9)
@@ -124,6 +126,8 @@ plt.minorticks_on()
 plt.xlabel('Time period')
 plt.ylabel('Velocity (m/s^2)')
 plt.legend(['measurments', 'predictions', 'kalman filter'])
+plt.title('Data from velocity sensor')
+plt.savefig('velocity_graph')
 plt.show()
 
 # print(f'Predicted values')
