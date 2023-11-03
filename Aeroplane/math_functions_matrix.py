@@ -131,7 +131,7 @@ def x_predicted(delta_t, x_prev, control_matrix, noise_matrix):
 
 ######## Predicted process covariance matrix ########
 # The error matrix Q has been neglected for simplicity
-def p_predicted(delta_t, P_prev):
+def p_predicted(delta_t, p_prev):
     '''
     This function calculate predicted process covariance martix
     In simple terms calculates the error in estimates or process
@@ -142,7 +142,7 @@ def p_predicted(delta_t, P_prev):
     inputs = matrix A, previous predicted covarinace matrix
     output = predicted covariance matrix
     '''
-    term_1 = matrix_a(delta_t) @ P_prev @ matrix_a(delta_t).T
+    term_1 = matrix_a(delta_t) @ p_prev @ matrix_a(delta_t).T
     # To simplify the calculations
     term_1[0][1] = 0
     term_1[1][0] = 0
@@ -169,7 +169,7 @@ def measurements(position, velocity):
                   [0, 1]])
     prev_y = np.array([[position],
                        [velocity]])
-    return C @ prev_y
+    return c @ prev_y
 
 ################# END-OF-STEP-2 ##########################
 
@@ -177,7 +177,7 @@ def measurements(position, velocity):
 ################# START-OF-STEP-3 ##########################
 
 ## Kalman Gain Matrix ##
-def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
+def kalman_matrix(p_matrix_predicted, position_err, velocity_err):
     '''
     Calculates the kalman gain matrix,
     Kalman gain determines the amount of weight given 
@@ -186,8 +186,8 @@ def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
     inputs = predicted process covariance matrix, errors in observation(position,velocity)
     output = Kalman Gain Matrix 
     '''
-    term_1 = P_matrix_predicted @ matrix_h().T
-    term_2 = matrix_h() @ P_matrix_predicted @ matrix_h().T
+    term_1 = p_matrix_predicted @ matrix_h().T
+    term_2 = matrix_h() @ p_matrix_predicted @ matrix_h().T
     term_3 = matrix_r(position_err, velocity_err)
     # denominator = term_2 + term_3
     return np.round(term_1 @ np.linalg.inv(term_2 + term_3), 3)

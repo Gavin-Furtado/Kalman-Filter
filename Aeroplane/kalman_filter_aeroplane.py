@@ -11,7 +11,7 @@ Reference: Michel Van Biezen lectures
 
 from math_functions_matrix import *
 import matplotlib.pyplot as plt
-from tabulate import tabulate
+# from tabulate import tabulate
 
 ## Measurements ##
 measurement_position = [4260, 4550, 4860, 5110]
@@ -39,7 +39,7 @@ for i in range(4):
         previous_control_matrix = initial_control_matrix
         previous_noise_matrix = initial_noise_matrix
         predicted_state_matrix = x_predicted(1, previous_state_matrix,
-                                             previous_control_matrix, previous_noise_matrix)
+                                             previous_control_matrix, previous_noise_matrix)  # pylint: disable=used-before-assignment
 
     # previous_process_covariance_matrix = updated_process_covariance_state_matrix
     if i == 0:
@@ -47,7 +47,7 @@ for i in range(4):
             1, initial_process_covariance_matrix)
     else:
         predicted_process_covariance_matrix = p_predicted(
-            1, previous_process_covariance_matrix)
+            1, previous_process_covariance_matrix)  # pylint: disable=used-before-assignment
 
     ## storing prediction value in dictionary ##
     prediction['position'].append(predicted_state_matrix[0][0])
