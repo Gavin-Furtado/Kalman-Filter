@@ -8,7 +8,7 @@ Author: Gavin Furtado
 Reference: Michel Van Biezen lectures
 '''
 
-import numpy as np
+import numpy as np # pylint: disable=import-error
 
 ################# The Aeroplane example ##############
 
@@ -17,31 +17,31 @@ import numpy as np
 ## Matrix A (2x2) ##
 
 
-def matrix_A(delta_t):
+def matrix_a(delta_t):
     '''
     This function creates the matrix A required
     for further calculations
     '''
-    A = np.array([[1, delta_t],
-                  [0, 1]])
-    return A
+    return np.array([[1, delta_t],
+                     [0, 1]])
+
 
 ## Matrix B (2x1) ##
 
 
-def matrix_B(delta_t):
+def matrix_b(delta_t):
     '''
     This function creates the matrix B required
     for further calculations
     '''
-    B = np.array([[0.5*delta_t],
-                  [delta_t]])
-    return B
+    return np.array([[0.5*delta_t],
+                     [delta_t]])
+
 
 ## Matrix H (2x2) ##
 
 
-def matrix_H():
+def matrix_h():
     '''
     This function creates the matrix H required
     for further calculations
@@ -54,7 +54,7 @@ def matrix_H():
 ## Matrix R (2x2) ##
 
 
-def matrix_R(position_err, velocity_err):
+def matrix_r(position_err, velocity_err):
     '''
     This function creates the matrix R required
     for further calculations
@@ -66,7 +66,7 @@ def matrix_R(position_err, velocity_err):
 ################# START-OF-INITIALIZATION ##########################
 
 ######## Initial State Matrix ##############
-def X_initial(position, acceleration):
+def x_initial(position, acceleration):
     '''
     This function creates initial state matrix: X
     '''
@@ -75,7 +75,7 @@ def X_initial(position, acceleration):
 ## Initial Control Matrix ##
 
 
-def U_initial(acceleration):
+def u_initial(acceleration):
     '''
     This function creates initial control matrix: B
     '''
@@ -84,7 +84,7 @@ def U_initial(acceleration):
 ## Initial Noise Matrix ##
 
 
-def W_initial(noise):
+def w_initial(noise):
     '''
     This function creates initial noise matrix: W
     '''
@@ -96,7 +96,7 @@ def W_initial(noise):
 # the calculations simpler
 
 
-def P_initial(position_process_error, velocity_process_error):
+def p_initial(position_process_error, velocity_process_error):
     '''
     This function creates initial process covariance matrix: P
     '''
@@ -109,7 +109,7 @@ def P_initial(position_process_error, velocity_process_error):
 ################# START-OF-STEP-1 ##########################
 ########### Prediction of new measurements and errors in prediction/process ##
 
-def X_predicted(delta_t, X_prev, control_matrix, noise_matrix):
+def x_predicted(delta_t, x_prev, control_matrix, noise_matrix):
     '''
     This function predicts the state matrix
     In simple terms predicts the next value of the measurement 
@@ -121,8 +121,8 @@ def X_predicted(delta_t, X_prev, control_matrix, noise_matrix):
     inputs = sampling time, position, velocity, acceleration, noise
     output = position, velocity (predicted)  
     '''
-    term_1 = matrix_A(delta_t) @ X_prev
-    term_2 = (matrix_B(delta_t) @ control_matrix).reshape(2, 1)
+    term_1 = matrix_a(delta_t) @ x_prev
+    term_2 = (matrix_b(delta_t) @ control_matrix).reshape(2, 1)
     # Try to understand why reshaping was required
     term_3 = noise_matrix
 
@@ -131,7 +131,7 @@ def X_predicted(delta_t, X_prev, control_matrix, noise_matrix):
 
 ######## Predicted process covariance matrix ########
 # The error matrix Q has been neglected for simplicity
-def P_predicted(delta_t, P_prev):
+def p_predicted(delta_t, p_prev):
     '''
     This function calculate predicted process covariance martix
     In simple terms calculates the error in estimates or process
@@ -142,7 +142,7 @@ def P_predicted(delta_t, P_prev):
     inputs = matrix A, previous predicted covarinace matrix
     output = predicted covariance matrix
     '''
-    term_1 = matrix_A(delta_t) @ P_prev @ matrix_A(delta_t).T
+    term_1 = matrix_a(delta_t) @ p_prev @ matrix_a(delta_t).T
     # To simplify the calculations
     term_1[0][1] = 0
     term_1[1][0] = 0
@@ -165,11 +165,11 @@ def measurements(position, velocity):
     input = position, velocity
     output = [[position], [velocity]]
     '''
-    C = np.array([[1, 0],
+    c = np.array([[1, 0],
                   [0, 1]])
-    prev_Y = np.array([[position],
+    prev_y = np.array([[position],
                        [velocity]])
-    return C @ prev_Y
+    return c @ prev_y
 
 ################# END-OF-STEP-2 ##########################
 
@@ -177,7 +177,7 @@ def measurements(position, velocity):
 ################# START-OF-STEP-3 ##########################
 
 ## Kalman Gain Matrix ##
-def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
+def kalman_matrix(p_matrix_predicted, position_err, velocity_err):
     '''
     Calculates the kalman gain matrix,
     Kalman gain determines the amount of weight given 
@@ -186,9 +186,9 @@ def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
     inputs = predicted process covariance matrix, errors in observation(position,velocity)
     output = Kalman Gain Matrix 
     '''
-    term_1 = P_matrix_predicted @ matrix_H().T
-    term_2 = matrix_H() @ P_matrix_predicted @ matrix_H().T
-    term_3 = matrix_R(position_err, velocity_err)
+    term_1 = p_matrix_predicted @ matrix_h().T
+    term_2 = matrix_h() @ p_matrix_predicted @ matrix_h().T
+    term_3 = matrix_r(position_err, velocity_err)
     # denominator = term_2 + term_3
     return np.round(term_1 @ np.linalg.inv(term_2 + term_3), 3)
     # return np.divide(term_1,denominator)
@@ -201,7 +201,7 @@ def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
 ## Calculating current state ##
 
 
-def calculate_updated_state_matrix(matrix_H, new_measurements, k_gain, predicted_state):
+def calculate_updated_state_matrix(mat_h, new_measurements, k_gain, predicted_state):
     '''
     This function updates the sate matrix for the next iteration;
 
@@ -209,7 +209,7 @@ def calculate_updated_state_matrix(matrix_H, new_measurements, k_gain, predicted
             kalman gain
     output: updated state matrix
     '''
-    term_1 = matrix_H @ predicted_state
+    term_1 = mat_h @ predicted_state
     term_2 = new_measurements - term_1
     term_3 = k_gain @ term_2
     updated_state_matrix = predicted_state + term_3
@@ -218,7 +218,7 @@ def calculate_updated_state_matrix(matrix_H, new_measurements, k_gain, predicted
 ## Updating process covariance matrix ##
 
 
-def calculate_updated_process_covariance(k_gain, matrix_H, predicted_process_covar):
+def calculate_updated_process_covariance(k_gain, mat_h, predicted_process_covar):
     '''
     This function updates the process covariance matrix
 
@@ -228,7 +228,7 @@ def calculate_updated_process_covariance(k_gain, matrix_H, predicted_process_cov
 
     output: Updated covariance matrix
     '''
-    term_1 = k_gain @ matrix_H
+    term_1 = k_gain @ mat_h
     term_2 = np.array([[1, 0], [0, 1]]) - term_1
     return term_2 @ predicted_process_covar
 
