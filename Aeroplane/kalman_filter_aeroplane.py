@@ -22,10 +22,10 @@ prediction = {'position': [], 'velocity': []}
 kalman_filter = {'position': [], 'velocity': []}
 
 ## Step - Initialization ##
-initial_state_matrix = X_initial(4000, 280)
-initial_control_matrix = U_initial(2)
-initial_noise_matrix = W_initial(0)
-initial_process_covariance_matrix = P_initial(20, 5)
+initial_state_matrix = x_initial(4000, 280)
+initial_control_matrix = u_initial(2)
+initial_noise_matrix = w_initial(0)
+initial_process_covariance_matrix = p_initial(20, 5)
 
 # using for loop
 
@@ -33,20 +33,20 @@ for i in range(4):
     ## Step 1 - Prediction ##
     # previous_state_matrix = updated_current_state_matrix
     if i == 0:
-        predicted_state_matrix = X_predicted(1, initial_state_matrix,
+        predicted_state_matrix = x_predicted(1, initial_state_matrix,
                                              initial_control_matrix, initial_noise_matrix)
     else:
         previous_control_matrix = initial_control_matrix
         previous_noise_matrix = initial_noise_matrix
-        predicted_state_matrix = X_predicted(1, previous_state_matrix,
+        predicted_state_matrix = x_predicted(1, previous_state_matrix,
                                              previous_control_matrix, previous_noise_matrix)
 
     # previous_process_covariance_matrix = updated_process_covariance_state_matrix
     if i == 0:
-        predicted_process_covariance_matrix = P_predicted(
+        predicted_process_covariance_matrix = p_predicted(
             1, initial_process_covariance_matrix)
     else:
-        predicted_process_covariance_matrix = P_predicted(
+        predicted_process_covariance_matrix = p_predicted(
             1, previous_process_covariance_matrix)
 
     ## storing prediction value in dictionary ##
@@ -64,11 +64,11 @@ for i in range(4):
     ## Step 4 - Updation ##
     # Updated Current State Matrix
     updated_state_matrix = calculate_updated_state_matrix(
-        matrix_H(), measured_values, kalman_gain_matrix, predicted_state_matrix)
+        matrix_h(), measured_values, kalman_gain_matrix, predicted_state_matrix)
 
     # Updated Process Covariance Matrix
     updated_process_covariance_matrix = calculate_updated_process_covariance(
-        kalman_gain_matrix, matrix_H(), predicted_process_covariance_matrix)
+        kalman_gain_matrix, matrix_h(), predicted_process_covariance_matrix)
 
     ## storing kalman filter values in dictionary ##
     kalman_filter['position'].append(updated_state_matrix[0][0])
