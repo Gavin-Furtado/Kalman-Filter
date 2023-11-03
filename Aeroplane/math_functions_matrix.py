@@ -8,7 +8,7 @@ Author: Gavin Furtado
 Reference: Michel Van Biezen lectures
 '''
 
-import numpy as np
+import numpy as np # pylint: disable=import-error
 
 ################# The Aeroplane example ##############
 

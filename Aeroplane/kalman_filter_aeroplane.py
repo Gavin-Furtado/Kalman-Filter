@@ -10,7 +10,7 @@ Reference: Michel Van Biezen lectures
 '''
 
 from math_functions_matrix import *  # pylint: disable=unused-wildcard-import
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # pylint: disable=wildcard-import import-error
 # from tabulate import tabulate
 
 ## Measurements ##
