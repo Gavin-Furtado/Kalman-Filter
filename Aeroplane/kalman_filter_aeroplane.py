@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 # from tabulate import tabulate
 
 ## Measurements ##
-measurement_position = [4260, 4550, 4860, 5110]
-measurement_velocity = [282, 285, 286, 290]
+measurement_position = [4260, 4550, 4860, 5110, 5320, 5033, 5894, 5721]
+measurement_velocity = [282, 285, 286, 290, 285, 293, 298, 297]
 
 ## Estimated values from Kalman filter ##
 prediction = {'position': [], 'velocity': []}
@@ -29,7 +29,7 @@ initial_process_covariance_matrix = p_initial(20, 5)
 
 # using for loop
 
-for i in range(4):
+for i in range(8):
     ## Step 1 - Prediction ##
     # previous_state_matrix = updated_current_state_matrix
     if i == 0:
@@ -103,9 +103,9 @@ for i in range(4):
 
 
 ## Plotting graphs ##
-plt.plot([0, 1, 2, 3], measurement_position, 'ro')
-plt.plot([0, 1, 2, 3], prediction['position'], 'g^')
-plt.plot([0, 1, 2, 3], kalman_filter['position'], 'r-')
+plt.plot([0, 1, 2, 3,4,5,6,7], measurement_position, 'ro')
+plt.plot([0, 1, 2, 3,4,5,6,7], prediction['position'], 'g^')
+plt.plot([0, 1, 2, 3,4,5,6,7], kalman_filter['position'], 'r-')
 plt.grid(which='major', color='#DDDDDD', linewidth=0.9)
 plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.6)
 plt.minorticks_on()
@@ -115,9 +115,9 @@ plt.legend(['measurments', 'predictions', 'kalman filter'])
 plt.show()
 
 # # velocity graph
-plt.plot([0, 1, 2, 3], measurement_velocity, 'ro')
-plt.plot([0, 1, 2, 3], prediction['velocity'], 'g^')
-plt.plot([0, 1, 2, 3], kalman_filter['velocity'], 'r-')
+plt.plot([0, 1, 2, 3,4,5,6,7], measurement_velocity, 'ro')
+plt.plot([0, 1, 2, 3,4,5,6,7], prediction['velocity'], 'g^')
+plt.plot([0, 1, 2, 3,4,5,6,7], kalman_filter['velocity'], 'r-')
 plt.grid(which='major', color='#DDDDDD', linewidth=0.9)
 plt.grid(which='minor', color='#EEEEEE', linestyle=':', linewidth=0.6)
 plt.minorticks_on()
