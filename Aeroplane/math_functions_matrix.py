@@ -23,8 +23,8 @@ def matrix_a(delta_t):
     for further calculations
     '''
     return np.array([[1, delta_t],
-                  [0, 1]])
-    
+                     [0, 1]])
+
 
 ## Matrix B (2x1) ##
 
@@ -35,8 +35,8 @@ def matrix_b(delta_t):
     for further calculations
     '''
     return np.array([[0.5*delta_t],
-                  [delta_t]])
-    
+                     [delta_t]])
+
 
 ## Matrix H (2x2) ##
 
@@ -109,7 +109,7 @@ def p_initial(position_process_error, velocity_process_error):
 ################# START-OF-STEP-1 ##########################
 ########### Prediction of new measurements and errors in prediction/process ##
 
-def x_predicted(delta_t, X_prev, control_matrix, noise_matrix):
+def x_predicted(delta_t, x_prev, control_matrix, noise_matrix):
     '''
     This function predicts the state matrix
     In simple terms predicts the next value of the measurement 
@@ -121,7 +121,7 @@ def x_predicted(delta_t, X_prev, control_matrix, noise_matrix):
     inputs = sampling time, position, velocity, acceleration, noise
     output = position, velocity (predicted)  
     '''
-    term_1 = matrix_a(delta_t) @ X_prev
+    term_1 = matrix_a(delta_t) @ x_prev
     term_2 = (matrix_b(delta_t) @ control_matrix).reshape(2, 1)
     # Try to understand why reshaping was required
     term_3 = noise_matrix
@@ -165,11 +165,11 @@ def measurements(position, velocity):
     input = position, velocity
     output = [[position], [velocity]]
     '''
-    C = np.array([[1, 0],
+    c = np.array([[1, 0],
                   [0, 1]])
-    prev_Y = np.array([[position],
+    prev_y = np.array([[position],
                        [velocity]])
-    return C @ prev_Y
+    return C @ prev_y
 
 ################# END-OF-STEP-2 ##########################
 
@@ -201,7 +201,7 @@ def kalman_matrix(P_matrix_predicted, position_err, velocity_err):
 ## Calculating current state ##
 
 
-def calculate_updated_state_matrix(matrix_h, new_measurements, k_gain, predicted_state):
+def calculate_updated_state_matrix(mat_h, new_measurements, k_gain, predicted_state):
     '''
     This function updates the sate matrix for the next iteration;
 
@@ -209,7 +209,7 @@ def calculate_updated_state_matrix(matrix_h, new_measurements, k_gain, predicted
             kalman gain
     output: updated state matrix
     '''
-    term_1 = matrix_h @ predicted_state
+    term_1 = mat_h @ predicted_state
     term_2 = new_measurements - term_1
     term_3 = k_gain @ term_2
     updated_state_matrix = predicted_state + term_3
@@ -218,7 +218,7 @@ def calculate_updated_state_matrix(matrix_h, new_measurements, k_gain, predicted
 ## Updating process covariance matrix ##
 
 
-def calculate_updated_process_covariance(k_gain, matrix_h, predicted_process_covar):
+def calculate_updated_process_covariance(k_gain, mat_h, predicted_process_covar):
     '''
     This function updates the process covariance matrix
 
@@ -228,7 +228,7 @@ def calculate_updated_process_covariance(k_gain, matrix_h, predicted_process_cov
 
     output: Updated covariance matrix
     '''
-    term_1 = k_gain @ matrix_h
+    term_1 = k_gain @ mat_h
     term_2 = np.array([[1, 0], [0, 1]]) - term_1
     return term_2 @ predicted_process_covar
 
