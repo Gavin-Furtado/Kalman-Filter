@@ -9,7 +9,7 @@ Author: Gavin Furtado
 Reference: Michel Van Biezen lectures
 '''
 
-from math_functions_matrix import *
+from math_functions_matrix import * # pylint: disable=unused-wildcard-import
 import matplotlib.pyplot as plt
 # from tabulate import tabulate
 
@@ -38,8 +38,8 @@ for i in range(4):
     else:
         previous_control_matrix = initial_control_matrix
         previous_noise_matrix = initial_noise_matrix
-        predicted_state_matrix = x_predicted(1, previous_state_matrix,
-                                             previous_control_matrix, previous_noise_matrix)  # pylint: disable=used-before-assignment
+        predicted_state_matrix = x_predicted(1, previous_state_matrix, # pylint: disable=used-before-assignment
+                                             previous_control_matrix, previous_noise_matrix)  
 
     # previous_process_covariance_matrix = updated_process_covariance_state_matrix
     if i == 0:
