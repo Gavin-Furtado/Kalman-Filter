@@ -12,8 +12,9 @@ The project time line would start from 10 October 2023 till 31 December 2023.
 
 ## Project Timeline
 
-## Results[
-Kalman filter on position data](position_graph.png)
+## Results
+![Kalman filter on position data](position_graph.png)
+![Kalman filter on velocity data](velocity_graph.png)
 
 ## 📑 References
 
