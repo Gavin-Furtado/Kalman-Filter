@@ -45,6 +45,10 @@ Author: Gavin Furtado
 from numpy.random import randn
 import matplotlib.pyplot as plt
 import numpy as np
+from filterpy.kalman import KalmanFilter
+from scipy.linalg import block_diag
+from filterpy.common import Q_discrete_white_noise
+from filterpy.stats import plot_covariance_ellipse
 
 class PosSensor(object):
     def __init__(self, pos=(0,0), vel=(0,0), noise_std=1.):
@@ -62,5 +66,63 @@ class PosSensor(object):
 pos,vel =(4,3), (2,1)
 sensor = PosSensor(pos, vel, noise_std=1)
 ps = np.array([sensor.read() for _ in range(50)])
-plt.scatter(ps[:,0], ps[:,1])
-plt.show()
+# plt.scatter(ps[:,0], ps[:,1])
+# plt.show()
+
+R_std = 0.5
+Q_std = 0.8
+
+def tracker1():
+    tracker = KalmanFilter(dim_x=4, dim_z=2)
+    dt = 1 # 1 second
+
+    # State transistion function
+    tracker.F = np.array([[1,dt,0,0],
+                        [0,1,0,0],
+                        [0,0,1,dt],
+                        [0,0,0,1]])
+
+    # Process noise matrix
+    q = Q_discrete_white_noise(dim=2, dt=dt, var=Q_std**2)
+    tracker.Q = block_diag(q,q)
+    print(tracker.Q)
+
+    # Control matrix is default zero
+
+    # Measurement function
+    tracker.H = np.array([[1/0.3048, 0, 0, 0],
+                        [0,0,1/0.3047,0]])
+    # Converting foot to meters
+
+    # Measurement noise matrix
+    # tracker.R = np.array([[5.,0],
+    #                     [0,5.]])
+    tracker.R = np.eye(2) * R_std**2
+    # It is a two cross two matrix because there are two sensor inputs
+
+    # initial guess for sensor data
+    tracker.x = np.array([[0,0,0,0]]).T
+
+    # Process covariance matirx
+    tracker.P = np.eye(4)*500
+    return tracker
+
+### Simulation data
+N = 30 
+sensor = PosSensor((0,0),(2,2), noise_std=R_std)
+zs = np.array([sensor.read() for _ in range(N)])
+
+robot_tracker = tracker1()
+mu, cov, _, _ = robot_tracker.batch_filter(zs)
+
+for x,P in zip(mu,cov):
+    cov = np.array([[P[0,0], P[2,0],
+                     P[0,2],P[2,2]]])
+    mean = (x[0,0], x[2,0])
+    plot_covariance_ellipse(mean, cov=cov, fc='g', std=3, alpha=0.5)
+
+# Plotting
+zs *= .3048 
+plt.plot(mu[:,0], mu[:,2])
+plt.plot(zs[:,0],zs[:1])
+plt.legend(loc=2)
