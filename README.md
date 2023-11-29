@@ -1,18 +1,25 @@
-# Kalman-Filter
+# Kalman Filter Algorithm  
 
-This repository is for learning about Kalman filters.
+## Project Overview
+This project is designed for the purpose of learning the mathematics, coding and implementation of Kalman filter algorithm.
 
-The plan is to solve few real world examples like temperature sensors, airplane velocity and position examples.
+Kalman filter is a commonly used state estimation algorithm for data from electronic sensors. 
 
-There would be multiple scripts that perform basic mathematical computations such as the gaussian distribution, it would be the form of small and reusable functions. These functions would be called in a main script where the actual simpplified version of the code would run.
+It predicts the sensor value based on the past, current readings and gives a wieght(trust factor) between the measurement and prediction.
 
+This project is divided into two phases:
+- Phase 1: Translation lecture examples into functional code
+- Phase 2: Familiarization with the use of FilterPy library
 
 ## Deliverables
-Graphical representation of Kalman filter.
+Graphical representation of Kalman filter algorithm.
 
 ## Project Timeline
-Start date: 10 October 2023 
-End Date: 31 December 2023
+- Start date: 10 October 2023  
+- End Date: 31 December 2023
+
+Phase 1️⃣:  week 2 of October 2023 to week 3 of November 2023   
+Phase 2️⃣:  week 3 of November 2023 to week 4 of December 2023
 
 ## Results
 ![Kalman filter on position data](position_graph.png)
