@@ -22,8 +22,8 @@ Phase 1️⃣:  week 2 of October 2023 to week 3 of November 2023
 Phase 2️⃣:  week 3 of November 2023 to week 4 of December 2023
 
 ## Results
-![Kalman filter on position data](position_graph.png)
-![Kalman filter on velocity data](velocity_graph.png)
+![Kalman filter on position data](Results/position_graph.png)
+![Kalman filter on velocity data](Results/velocity_graph.png)
 
 ## 📑 References
 
