@@ -11,7 +11,7 @@ There would be multiple scripts that perform basic mathematical computations suc
 Graphical representation of Kalman filter.
 
 ## Project Timeline
-Start date: 10 October 2023 
+Start date: 10 October 2023  
 End Date: 31 December 2023
 
 ## Results
