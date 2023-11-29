@@ -6,11 +6,13 @@ The plan is to solve few real world examples like temperature sensors, airplane 
 
 There would be multiple scripts that perform basic mathematical computations such as the gaussian distribution, it would be the form of small and reusable functions. These functions would be called in a main script where the actual simpplified version of the code would run.
 
-The project time line would start from 10 October 2023 till 31 December 2023.
 
 ## Deliverables
+Graphical representation of Kalman filter.
 
 ## Project Timeline
+Start date: 10 October 2023 
+End Date: 31 December 2023
 
 ## Results
 ![Kalman filter on position data](position_graph.png)
