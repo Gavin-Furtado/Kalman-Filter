@@ -14,3 +14,13 @@ Date: 15 November 2023
 Author: Gavin Furtado
 '''
 
+import math
+import numpy as np
+from numpy.random import randn
+
+from filterpy.kalman import KalmanFilter
+
+kf = KalmanFilter(dim_x=2, dim_z=1)
+
+print(kf)
+
