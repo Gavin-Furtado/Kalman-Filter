@@ -18,9 +18,24 @@ import math
 import numpy as np
 from numpy.random import randn
 
-from filterpy.kalman import KalmanFilter
+def compute_dog_data(measurement_var, process_var, count=1, dt=1):
+    # initial value for position and velocity
+    position, velocity = 0.,1.
 
-kf = KalmanFilter(dim_x=2, dim_z=1)
+    # calculated standard deviation
+    measurement_std = math.sqrt(measurement_var)
+    process_std = math.sqrt(process_var)
+    
+    position_data, measurement_data = [], []
+    for i in range(count):
+        # calculating position and veocity
+        v = velocity + (randn() * process_std)
+        position += v*dt
+        position_data.append(position)
+        measurement_data.append(position + randn() * measurement_std)
+    
+    return np.array(position_data), np.array(measurement_data)
 
-print(kf)
+print(compute_dog_data(0.5,0.2))
+
 
