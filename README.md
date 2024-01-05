@@ -15,11 +15,8 @@ This project is divided into two phases:
 Graphical representation of Kalman filter algorithm.
 
 ## Project Timeline
-- Start date: 10 October 2023  
-- End Date: 31 December 2023
-
 Phase 1️⃣:  week 2 of October 2023 to week 3 of November 2023   
-Phase 2️⃣:  week 3 of November 2023 to week 4 of December 2023
+Phase 2️⃣:  week 3 of November 2023 to Present
 
 ## Results
 ![Kalman filter on position data](Results/position_graph.png)
