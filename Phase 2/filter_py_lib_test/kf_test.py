@@ -38,7 +38,7 @@ def compute_dog_data(measurement_var, process_var, count=1, dt=1):
     
     return np.array(position_data), np.array(measurement_data)
 
-print(compute_dog_data(0.5,0.2))
+# print(compute_dog_data(0.5,0.2))
 
 ## dummy data class - tracking a robot
 ## A model of real world object: electronic sensor
@@ -48,36 +48,44 @@ class PositionSensor(object):
     
     Methods: read
     '''
-    def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), acceleration=(0.1,0.04), noise_std=1.) -> None:
+    def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), 
+                 acceleration=(0.2,0.09), noise_mean=0., noise_std=0.) -> None:
         self.position = np.array(initial_position)
         self.velocity = np.array(initial_velocity)
         self.acceleration = np.array(acceleration)
+        self.noise_mean = noise_mean
         self.noise_std = noise_std
 
     def read(self):
         self.velocity += self.acceleration
         self.position += self.velocity
 
-        return self.position + np.random.randn(2) * self.noise_std
+        noise = np.random.normal(self.noise_mean, self.noise_std,2)
+        return self.position + noise, self.velocity + noise, self.acceleration + noise, noise
+        #return self.position + np.random.randn(2) * self.noise_std
 
 ## Initialise the Sensor
-sensor = PositionSensor()
+sensor = PositionSensor(noise_mean=0.2, noise_std=2.5)
 
 # Genertion of dummy data
 sample_size = 50
 position_data = np.zeros((sample_size,2))
 velocity_data = np.zeros((sample_size,2))
+acceleration_data = np.zeros((sample_size,2))
+noise_data = np.zeros((sample_size,2))
 
 for i in range(sample_size):
-    sensor.read()
-    position_data[i] = sensor.position
-    velocity_data[i] = sensor.velocity
+    position, velocity, acceleration, noise = sensor.read()
+    position_data[i] = position
+    velocity_data[i] = velocity
+    acceleration_data[i] = acceleration
+    noise_data[i] = noise
 
 time_interval = np.arange(sample_size) # Create an array for x-axis, use either range() or np.arange()
-print(position_data)
+print(noise_data)
 
 # Plotting
-plt.subplot(121)
+plt.subplot(221)
 plt.scatter(time_interval,position_data[:,0],label = 'X-Position')
 plt.scatter(time_interval,position_data[:,1],label = 'Y-Position')
 plt.xlabel('Time')
@@ -86,13 +94,28 @@ plt.title('Position data from sensor')
 plt.legend()
 # plt.show()
 
-plt.subplot(122)
+plt.subplot(222)
 plt.scatter(time_interval,velocity_data[:,0],label = 'X-Velocity')
 plt.scatter(time_interval,velocity_data[:,1],label = 'Y-Velocity')
 plt.xlabel('Time')
 plt.ylabel('Velocity')
 plt.title('Velocity data from sensor')
 plt.legend()
+#plt.show()
+
+plt.subplot(223)
+plt.scatter(time_interval,acceleration_data[:,0],label = 'X-Position')
+plt.scatter(time_interval,acceleration_data[:,1],label = 'Y-Position')
+plt.title("Acceleration data from sensor")
+plt.xlabel('Time') 
+plt.ylabel('Acceleration')
+# plt.show()
+
+plt.subplot(224)
+plt.hist(noise_data.flatten(), bins=50, density=True, alpha=0.75)
+plt.title("Gaussian distribution of senosr noise")
+plt.xlabel('Noise values') # From Chat GPT
+plt.ylabel('Probablity Density')
 plt.show()
 
 ## Using FilterPy library
