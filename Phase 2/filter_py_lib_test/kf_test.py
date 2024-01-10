@@ -48,7 +48,7 @@ class PositionSensor(object):
     
     Methods: read
     '''
-    def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), acceleration=(0.1,0.4), noise_std=1.) -> None:
+    def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), acceleration=(0.1,0.04), noise_std=1.) -> None:
         self.position = np.array(initial_position)
         self.velocity = np.array(initial_velocity)
         self.acceleration = np.array(acceleration)
@@ -58,13 +58,13 @@ class PositionSensor(object):
         self.velocity += self.acceleration
         self.position += self.velocity
 
-        return self.position + np.random.randn() * self.noise_std
+        return self.position + np.random.randn(2) * self.noise_std
 
 ## Initialise the Sensor
 sensor = PositionSensor()
 
 # Genertion of dummy data
-sample_size = 10
+sample_size = 50
 position_data = np.zeros((sample_size,2))
 velocity_data = np.zeros((sample_size,2))
 
@@ -75,10 +75,23 @@ for i in range(sample_size):
 
 time_interval = np.arange(sample_size) # Create an array for x-axis, use either range() or np.arange()
 print(position_data)
+
+# Plotting
+plt.subplot(121)
 plt.scatter(time_interval,position_data[:,0],label = 'X-Position')
 plt.scatter(time_interval,position_data[:,1],label = 'Y-Position')
-#plt.plot(time_interval,velocity_data[:,0],label = 'X-Velocity')
-#plt.plot(time_interval,velocity_data[:,1],label = 'Y-Velocity')
+plt.xlabel('Time')
+plt.ylabel('Position')
+plt.title('Position data from sensor')
+plt.legend()
+# plt.show()
+
+plt.subplot(122)
+plt.scatter(time_interval,velocity_data[:,0],label = 'X-Velocity')
+plt.scatter(time_interval,velocity_data[:,1],label = 'Y-Velocity')
+plt.xlabel('Time')
+plt.ylabel('Velocity')
+plt.title('Velocity data from sensor')
 plt.legend()
 plt.show()
 
