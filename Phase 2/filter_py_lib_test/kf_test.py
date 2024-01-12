@@ -14,6 +14,12 @@ Date: 15 November 2023
 Author: Gavin Furtado
 '''
 
+## To do list
+# 1. Create Class for plotting
+# 2. Solve Github problem
+# 3. Code using own style
+# 4. Prepare state matrix
+
 import math
 import numpy as np
 from numpy.random import randn
@@ -71,7 +77,7 @@ class PositionSensor(object):
 sensor = PositionSensor(noise_mean=0.2, noise_std=1.5, dt=1)
 
 # Genertion of dummy data
-sample_size = 50
+sample_size = 50     # size of the data set
 position_data = np.zeros((sample_size,2))
 velocity_data = np.zeros((sample_size,2))
 acceleration_data = np.zeros((sample_size,2))
@@ -144,7 +150,6 @@ A,B = Adaptation matrix
 
 ## Set up
 # dt = 1.
-
 
 # X = np.array([[, y],
 #              [x', y']])
