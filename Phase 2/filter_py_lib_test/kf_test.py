@@ -58,7 +58,7 @@ class PositionSensor(object):
 
     def read(self):
         self.velocity += self.acceleration
-        self.position += self.velocity
+        self.position += self.velocity 
 
         noise = np.random.normal(self.noise_mean, self.noise_std,2)
         return self.position + noise, self.velocity + noise, self.acceleration + noise, noise
@@ -120,4 +120,52 @@ plt.show()
 
 ## Using FilterPy library
 
-## Without FilterPy library
+
+
+###### Without FilterPy library ######
+'''
+X = State Matrix
+u = Control variable matrix
+w = predicted state noise matrix
+
+P = Process covariance matrix (Error in process)
+Q = Process noise covariance matrix 
+R = Sensor noise covariance matrix (Error in measurement)
+
+Y = Measurement of state
+K = Kalman Gain
+
+dt = Time period
+A,B = Adaptation matrix
+'''
+
+## Set up
+# dt = 1.
+
+
+# X = np.array([[, y],
+#              [x', y']])
+# P = 
+# A = np.array([[1, dt],
+#               [0, 1]])
+# B = np.array([[0.5*dt**2],
+#               [dt**2]])
+# u = 0
+
+# H = 'TBD'
+
+# R = 
+# Q =
+## Step 0 - Initial State ##
+
+
+## Previous State ##
+
+## Step 1 - Predicted State ##
+
+
+## Step 2 - Measurement from sensor ##
+
+## Step 3 - Kalman Gain ##
+
+## Step 4 - Update measurement & Kalman Gain ##
