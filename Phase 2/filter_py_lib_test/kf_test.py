@@ -49,23 +49,26 @@ class PositionSensor(object):
     Methods: read
     '''
     def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), 
-                 acceleration=(0.2,0.09), noise_mean=0., noise_std=0.) -> None:
+                 acceleration=(0.2,0.09),dt=0., noise_mean=0., noise_std=0.) -> None:
         self.position = np.array(initial_position)
         self.velocity = np.array(initial_velocity)
         self.acceleration = np.array(acceleration)
+        self.dt = np.array(dt)
         self.noise_mean = noise_mean
         self.noise_std = noise_std
 
     def read(self):
-        self.velocity += self.acceleration
-        self.position += self.velocity 
+        self.velocity += self.acceleration*self.dt  
+        self.position += self.velocity*self.dt 
 
-        noise = np.random.normal(self.noise_mean, self.noise_std,2)
+        noise = np.random.normal(self.noise_mean, self.noise_std,2) 
+        ## Is this error in measurement(R) or error in process (P)                                                    
+
         return self.position + noise, self.velocity + noise, self.acceleration + noise, noise
         #return self.position + np.random.randn(2) * self.noise_std
 
 ## Initialise the Sensor
-sensor = PositionSensor(noise_mean=0.2, noise_std=2.5)
+sensor = PositionSensor(noise_mean=0.2, noise_std=1.5, dt=1)
 
 # Genertion of dummy data
 sample_size = 50
