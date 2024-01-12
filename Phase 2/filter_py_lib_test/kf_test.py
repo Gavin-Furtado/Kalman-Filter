@@ -14,6 +14,12 @@ Date: 15 November 2023
 Author: Gavin Furtado
 '''
 
+## To do list
+# 1. Create Class for plotting
+# 2. Solve Github problem
+# 3. Code using own style
+# 4. Prepare state matrix
+
 import math
 import numpy as np
 from numpy.random import randn
@@ -49,26 +55,29 @@ class PositionSensor(object):
     Methods: read
     '''
     def __init__(self, initial_position=(0.,0.), initial_velocity=(0.,0.), 
-                 acceleration=(0.2,0.09), noise_mean=0., noise_std=0.) -> None:
+                 acceleration=(0.2,0.09),dt=0., noise_mean=0., noise_std=0.) -> None:
         self.position = np.array(initial_position)
         self.velocity = np.array(initial_velocity)
         self.acceleration = np.array(acceleration)
+        self.dt = np.array(dt)
         self.noise_mean = noise_mean
         self.noise_std = noise_std
 
     def read(self):
-        self.velocity += self.acceleration
-        self.position += self.velocity
+        self.velocity += self.acceleration*self.dt  
+        self.position += self.velocity*self.dt 
 
-        noise = np.random.normal(self.noise_mean, self.noise_std,2)
+        noise = np.random.normal(self.noise_mean, self.noise_std,2) 
+        ## Is this error in measurement(R) or error in process (P)                                                    
+
         return self.position + noise, self.velocity + noise, self.acceleration + noise, noise
         #return self.position + np.random.randn(2) * self.noise_std
 
 ## Initialise the Sensor
-sensor = PositionSensor(noise_mean=0.2, noise_std=2.5)
+sensor = PositionSensor(noise_mean=0.2, noise_std=1.5, dt=1)
 
 # Genertion of dummy data
-sample_size = 50
+sample_size = 50     # size of the data set
 position_data = np.zeros((sample_size,2))
 velocity_data = np.zeros((sample_size,2))
 acceleration_data = np.zeros((sample_size,2))
@@ -84,40 +93,147 @@ for i in range(sample_size):
 time_interval = np.arange(sample_size) # Create an array for x-axis, use either range() or np.arange()
 print(noise_data)
 
-# Plotting
-plt.subplot(221)
-plt.scatter(time_interval,position_data[:,0],label = 'X-Position')
-plt.scatter(time_interval,position_data[:,1],label = 'Y-Position')
-plt.xlabel('Time')
-plt.ylabel('Position')
-plt.title('Position data from sensor')
-plt.legend()
-# plt.show()
+class PlotGraph(object):
+    def __init__(self, plot_number, x_data,y1_data,y2_data, title, xlabel, ylabel, label_1,label_2,
+                 bins, alpha, density):
+        self.plot_number = plot_number
+        self.x_data = x_data
+        self.y1_data = y1_data
+        self.y2_data = y2_data
+        self.title = title
+        self.xlabel = xlabel
+        self.ylabel = ylabel
+        self.label_1 = label_1
+        self.label_2 = label_2
+        self.bins = bins
+        self.alpha = alpha
+        self.density = density
+    
+    def scatter_plot(self):
+        plt.subplot(self.plot_number)
+        plt.scatter(self.x_data, self.y1_data, label = self.label_1)
+        plt.scatter(self.x_data, self.y2_data, label = self.label_2)
+        plt.grid(True, which='both',linewidth=0.5)
+        plt.xlabel(self.xlabel)
+        plt.ylabel(self.ylabel)
+        plt.title(self.title)
+        plt.legend()
+    
+    def gaussian_plot(self):
+        plt.subplot(self.plot_number)
+        plt.hist(self.y1_data.flatten(), self.bins, density=self.density, alpha=self.alpha)
+        plt.grid(True, which='both',linewidth=0.5)
+        plt.title(self.title)
+        plt.xlabel(self.xlabel) 
+        plt.ylabel(self.ylabel)
+        
+#Creating a single graph window
+plt.figure(figsize=(10,5))
 
-plt.subplot(222)
-plt.scatter(time_interval,velocity_data[:,0],label = 'X-Velocity')
-plt.scatter(time_interval,velocity_data[:,1],label = 'Y-Velocity')
-plt.xlabel('Time')
-plt.ylabel('Velocity')
-plt.title('Velocity data from sensor')
-plt.legend()
-#plt.show()
+#Creating instance of PlotGraph class
+position_graph=PlotGraph(221,time_interval,position_data[:,0],position_data[:,1],
+           'Position data from sensor', 'Time', 'Position','X-position','Y-position', None, None, None)
 
-plt.subplot(223)
-plt.scatter(time_interval,acceleration_data[:,0],label = 'X-Position')
-plt.scatter(time_interval,acceleration_data[:,1],label = 'Y-Position')
-plt.title("Acceleration data from sensor")
-plt.xlabel('Time') 
-plt.ylabel('Acceleration')
-# plt.show()
+velocity_graph=PlotGraph(222,time_interval,velocity_data[:,0],velocity_data[:,1],
+           'Velocity data from sensor', 'Time', 'Velocity','X-position','Y-position', None, None, None)
 
-plt.subplot(224)
-plt.hist(noise_data.flatten(), bins=50, density=True, alpha=0.75)
-plt.title("Gaussian distribution of senosr noise")
-plt.xlabel('Noise values') # From Chat GPT
-plt.ylabel('Probablity Density')
+acceleration_graph=PlotGraph(223,time_interval,acceleration_data[:,0],acceleration_data[:,1],
+           'Acceleration data from sensor', 'Time', 'Velocity','X-position','Y-position', None, None, None)
+
+gaussian_noise_graph = PlotGraph(224, None, noise_data, None, 'Gaussian Noise Distribution',
+                                 'Noise values', 'Probability Density', None, None, 50, 0.7, True)
+
+#Calling scatter_plot() method of class PlotGraph 
+position_graph.scatter_plot()
+velocity_graph.scatter_plot()
+acceleration_graph.scatter_plot()
+gaussian_noise_graph.gaussian_plot()
+
+#Display graph
+plt.tight_layout()
 plt.show()
+
+# Plotting
+# plt.subplot(221)
+# plt.scatter(time_interval,position_data[:,0],label = 'X-Position')
+# plt.scatter(time_interval,position_data[:,1],label = 'Y-Position')
+# plt.xlabel('Time')
+# plt.ylabel('Position')
+# plt.title('Position data from sensor')
+# plt.legend()
+# # plt.show()
+
+# plt.subplot(222)
+# plt.scatter(time_interval,velocity_data[:,0],label = 'X-Velocity')
+# plt.scatter(time_interval,velocity_data[:,1],label = 'Y-Velocity')
+# plt.xlabel('Time')
+# plt.ylabel('Velocity')
+# plt.title('Velocity data from sensor')
+# plt.legend()
+# #plt.show()
+
+# plt.subplot(223)
+# plt.scatter(time_interval,acceleration_data[:,0],label = 'X-Position')
+# plt.scatter(time_interval,acceleration_data[:,1],label = 'Y-Position')
+# plt.title("Acceleration data from sensor")
+# plt.xlabel('Time') 
+# plt.ylabel('Acceleration')
+# # plt.show()
+
+# plt.subplot(224)
+# plt.hist(noise_data.flatten(), bins=50, density=True, alpha=0.75)
+# plt.title("Gaussian distribution of senosr noise")
+# plt.xlabel('Noise values') # From Chat GPT
+# plt.ylabel('Probablity Density')
+# plt.show()
 
 ## Using FilterPy library
 
-## Without FilterPy library
+
+
+###### Without FilterPy library ######
+'''
+X = State Matrix
+u = Control variable matrix
+w = predicted state noise matrix
+
+P = Process covariance matrix (Error in process)
+Q = Process noise covariance matrix 
+R = Sensor noise covariance matrix (Error in measurement)
+
+Y = Measurement of state
+K = Kalman Gain
+
+dt = Time period
+A,B = Adaptation matrix
+'''
+
+## Set up
+# dt = 1.
+
+# X = np.array([[, y],
+#              [x', y']])
+# P = 
+# A = np.array([[1, dt],
+#               [0, 1]])
+# B = np.array([[0.5*dt**2],
+#               [dt**2]])
+# u = 0
+
+# H = 'TBD'
+
+# R = 
+# Q =
+## Step 0 - Initial State ##
+
+
+## Previous State ##
+
+## Step 1 - Predicted State ##
+
+
+## Step 2 - Measurement from sensor ##
+
+## Step 3 - Kalman Gain ##
+
+## Step 4 - Update measurement & Kalman Gain ##
