@@ -15,7 +15,7 @@ Author: Gavin Furtado
 '''
 
 ## To do list
-# 1. Create Class for plotting
+
 # 2. Solve Github problem
 # 3. Code using own style
 # 4. Prepare state matrix
