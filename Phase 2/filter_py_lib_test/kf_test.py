@@ -91,7 +91,6 @@ for i in range(sample_size):
     noise_data[i] = noise
 
 time_interval = np.arange(sample_size) # Create an array for x-axis, use either range() or np.arange()
-print(noise_data)
 
 class PlotGraph(object):
     def __init__(self, plot_number, x_data,y1_data,y2_data, title, xlabel, ylabel, label_1,label_2,
@@ -150,44 +149,20 @@ acceleration_graph.scatter_plot()
 gaussian_noise_graph.gaussian_plot()
 
 #Display graph
-plt.tight_layout()
-plt.show()
-
-
-TEsting tokens
-# Plotting
-# plt.subplot(221)
-# plt.scatter(time_interval,position_data[:,0],label = 'X-Position')
-# plt.scatter(time_interval,position_data[:,1],label = 'Y-Position')
-# plt.xlabel('Time')
-# plt.ylabel('Position')
-# plt.title('Position data from sensor')
-# plt.legend()
-# # plt.show()
-
-# plt.subplot(222)
-# plt.scatter(time_interval,velocity_data[:,0],label = 'X-Velocity')
-# plt.scatter(time_interval,velocity_data[:,1],label = 'Y-Velocity')
-# plt.xlabel('Time')
-# plt.ylabel('Velocity')
-# plt.title('Velocity data from sensor')
-# plt.legend()
-# #plt.show()
-
-# plt.subplot(223)
-# plt.scatter(time_interval,acceleration_data[:,0],label = 'X-Position')
-# plt.scatter(time_interval,acceleration_data[:,1],label = 'Y-Position')
-# plt.title("Acceleration data from sensor")
-# plt.xlabel('Time') 
-# plt.ylabel('Acceleration')
-# # plt.show()
-
-# plt.subplot(224)
-# plt.hist(noise_data.flatten(), bins=50, density=True, alpha=0.75)
-# plt.title("Gaussian distribution of senosr noise")
-# plt.xlabel('Noise values') # From Chat GPT
-# plt.ylabel('Probablity Density')
+# plt.tight_layout()
 # plt.show()
+
+# print(position_data)
+# print(velocity_data)
+# print(acceleration_data)
+# print(noise_data)
+
+print(position_data[3])
+print(velocity_data[3])
+
+X = np.array([[position_data[3][0]],[position_data[3][1]],
+              [velocity_data[3][0]],[velocity_data[3][1]]])
+print(X.size)
 
 ## Using FilterPy library
 
@@ -232,7 +207,54 @@ A,B = Adaptation matrix
 ## Previous State ##
 
 ## Step 1 - Predicted State ##
+class Prediction(object):
+    def __init__(self, X_previous, P_previous, dt=2., u=0, w=0, Q=0) -> None:
+        self.X_previous = X_previous
+        self.u = u
+        self.w = w
+        self.dt = dt
+        self.P_previous = P_previous
+        self.Q = Q
 
+    def A_matrix(self):
+        # Computing Matrix A, B
+        X_shape = self.X_previous.shape  #(4,1)
+
+        if X_shape[0] == 4: 
+            self.A = np.array([[1., 0., self.dt, 0.],
+                               [0., 1., 0., self.dt],
+                               [0., 0., 1., 0.],
+                               [0., 0., 0., 1.]])
+        elif X_shape[0] == 2:
+            self.A = np.array([[1., self.dt],
+                               [0., 1.]]) 
+            
+        elif X_shape[0] == 1:
+            self.A = np.array([[1.]])
+        return self.A
+
+    def B_matrix(self):
+        u_shape = self.u.shape
+
+        if u_shape[0] == 1: 
+            self.B = np.array([[0.5*self.dt**2],
+                               [self.dt**2]])
+
+        elif u_shape[0] == 2:
+            self.B = np.array([[0.5*self.dt**2, 0.],
+                               [0., 0.5*self.dt**2],
+                               [self.dt, 0.],
+                               [0., self.dt]])
+        return self.B
+
+    def X_predicted(self):
+        pass
+
+    def P_predicted(self):
+        pass
+
+predict = Prediction(X,0)
+print(predict.A_matrix())
 
 ## Step 2 - Measurement from sensor ##
 
