@@ -15,8 +15,6 @@ Author: Gavin Furtado
 '''
 
 ## To do list
-
-# 2. Solve Github problem
 # 3. Code using own style
 # 4. Prepare state matrix
 
@@ -24,27 +22,6 @@ import math
 import numpy as np
 from numpy.random import randn
 import matplotlib.pyplot as plt
-
-## dummy data - tracking a dog
-def compute_dog_data(measurement_var, process_var, count=1, dt=1):
-    # initial value for position and velocity
-    position, velocity = 0.,1.
-
-    # calculated standard deviation
-    measurement_std = math.sqrt(measurement_var)
-    process_std = math.sqrt(process_var)
-    
-    position_data, measurement_data = [], []
-    for i in range(count):
-        # calculating position and veocity
-        v = velocity + (randn() * process_std)
-        position += v*dt
-        position_data.append(position)
-        measurement_data.append(position + randn() * measurement_std)
-    
-    return np.array(position_data), np.array(measurement_data)
-
-# print(compute_dog_data(0.5,0.2))
 
 ## dummy data class - tracking a robot
 ## A model of real world object: electronic sensor
