@@ -15,8 +15,6 @@ Author: Gavin Furtado
 '''
 
 ## To do list
-
-# 2. Solve Github problem
 # 3. Code using own style
 # 4. Prepare state matrix
 
@@ -24,27 +22,6 @@ import math
 import numpy as np
 from numpy.random import randn
 import matplotlib.pyplot as plt
-
-## dummy data - tracking a dog
-def compute_dog_data(measurement_var, process_var, count=1, dt=1):
-    # initial value for position and velocity
-    position, velocity = 0.,1.
-
-    # calculated standard deviation
-    measurement_std = math.sqrt(measurement_var)
-    process_std = math.sqrt(process_var)
-    
-    position_data, measurement_data = [], []
-    for i in range(count):
-        # calculating position and veocity
-        v = velocity + (randn() * process_std)
-        position += v*dt
-        position_data.append(position)
-        measurement_data.append(position + randn() * measurement_std)
-    
-    return np.array(position_data), np.array(measurement_data)
-
-# print(compute_dog_data(0.5,0.2))
 
 ## dummy data class - tracking a robot
 ## A model of real world object: electronic sensor
@@ -159,10 +136,16 @@ gaussian_noise_graph.gaussian_plot()
 
 print(position_data[3])
 print(velocity_data[3])
+print(acceleration_data[3])
 
 X = np.array([[position_data[3][0]],[position_data[3][1]],
               [velocity_data[3][0]],[velocity_data[3][1]]])
-print(X.size)
+u = np.array([[acceleration_data[3][0]],
+              [acceleration_data[3][1]]])
+# print(X)
+# print(X.shape)
+# print(u)
+# print(u.shape)
 
 ## Using FilterPy library
 
@@ -208,7 +191,7 @@ A,B = Adaptation matrix
 
 ## Step 1 - Predicted State ##
 class Prediction(object):
-    def __init__(self, X_previous, P_previous, dt=2., u=0, w=0, Q=0) -> None:
+    def __init__(self, X_previous, P_previous, u, dt=2., w=0, Q=0) -> None:
         self.X_previous = X_previous
         self.u = u
         self.w = w
@@ -234,8 +217,8 @@ class Prediction(object):
         return self.A
 
     def B_matrix(self):
-        u_shape = self.u.shape
-
+        u_shape = self.u.shape # 2,1
+        
         if u_shape[0] == 1: 
             self.B = np.array([[0.5*self.dt**2],
                                [self.dt**2]])
@@ -248,13 +231,15 @@ class Prediction(object):
         return self.B
 
     def X_predicted(self):
-        pass
+        return (self.A_matrix()@self.X_previous) + (self.B_matrix()@self.u) #+ self.w 
 
     def P_predicted(self):
         pass
 
-predict = Prediction(X,0)
-print(predict.A_matrix())
+predict = Prediction(X,0,u) 
+print(predict.X_predicted())
+# print(predict.u)
+print(predict.B_matrix())
 
 ## Step 2 - Measurement from sensor ##
 
