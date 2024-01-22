@@ -70,8 +70,10 @@ for i in range(sample_size):
 time_interval = np.arange(sample_size) # Create an array for x-axis, use either range() or np.arange()
 
 class PlotGraph(object):
-    def __init__(self, plot_number, x_data,y1_data,y2_data, title, xlabel, ylabel, label_1,label_2,
-                 bins, alpha, density):
+    def __init__(self, plot_number, x_data, y1_data, y2_data, 
+                 title='Title', xlabel='X-Label', ylabel='Y-Label', 
+                 label_1=None,label_2= None,
+                 bins=30, alpha=0.7, density=True):
         self.plot_number = plot_number
         self.x_data = x_data
         self.y1_data = y1_data
@@ -89,7 +91,9 @@ class PlotGraph(object):
         plt.subplot(self.plot_number)
         plt.scatter(self.x_data, self.y1_data, label = self.label_1)
         plt.scatter(self.x_data, self.y2_data, label = self.label_2)
-        plt.grid(True, which='both',linewidth=0.5)
+        plt.grid(which='major',color='#DDDDDD',linewidth=0.5)
+        plt.grid(which='minor',color='#EEEEEE', linestyle=':',linewidth =0.6)
+        plt.minorticks_on()
         plt.xlabel(self.xlabel)
         plt.ylabel(self.ylabel)
         plt.title(self.title)
@@ -98,7 +102,9 @@ class PlotGraph(object):
     def gaussian_plot(self):
         plt.subplot(self.plot_number)
         plt.hist(self.y1_data.flatten(), self.bins, density=self.density, alpha=self.alpha)
-        plt.grid(True, which='both',linewidth=0.5)
+        plt.grid(which='major',color='#DDDDDD',linewidth=0.5)
+        plt.grid(which='minor',color='#EEEEEE', linestyle=':',linewidth =0.6)
+        plt.minorticks_on()
         plt.title(self.title)
         plt.xlabel(self.xlabel) 
         plt.ylabel(self.ylabel)
@@ -108,16 +114,17 @@ plt.figure(figsize=(10,5))
 
 #Creating instance of PlotGraph class
 position_graph=PlotGraph(221,time_interval,position_data[:,0],position_data[:,1],
-           'Position data from sensor', 'Time', 'Position','X-position','Y-position', None, None, None)
+           'Position data from sensor', 'Time', 'Position','X-position','Y-position')
 
 velocity_graph=PlotGraph(222,time_interval,velocity_data[:,0],velocity_data[:,1],
-           'Velocity data from sensor', 'Time', 'Velocity','X-position','Y-position', None, None, None)
+           'Velocity data from sensor', 'Time', 'Velocity','X-position','Y-position')
 
 acceleration_graph=PlotGraph(223,time_interval,acceleration_data[:,0],acceleration_data[:,1],
-           'Acceleration data from sensor', 'Time', 'Velocity','X-position','Y-position', None, None, None)
+           'Acceleration data from sensor', 'Time', 'Velocity','X-position','Y-position')
 
 gaussian_noise_graph = PlotGraph(224, None, noise_data, None, 'Gaussian Noise Distribution',
-                                 'Noise values', 'Probability Density', None, None, 50, 0.7, True)
+                                 'Noise values', 'Probability Density', 
+                                 bins=50, alpha=0.7, density=True)
 
 #Calling scatter_plot() method of class PlotGraph 
 position_graph.scatter_plot()
@@ -126,8 +133,8 @@ acceleration_graph.scatter_plot()
 gaussian_noise_graph.gaussian_plot()
 
 #Display graph
-# plt.tight_layout()
-# plt.show()
+plt.tight_layout()
+plt.show()
 
 # print(position_data)
 # print(velocity_data)
