@@ -4,11 +4,11 @@ Module that simulates a real world electronic sensor
 Author
 ------
 Gavin Furtado
+
 AOCS Engineer
 '''
 import numpy as np
 
-## dummy data class 
 ## A model of real world object: electronic sensor
 class PositionSensor(object):
     '''
@@ -107,9 +107,5 @@ class PositionSensor(object):
             noise_data[i] = noise
         return position_data, velocity_data, acceleration_data, noise_data
 
-## Initialise the Sensor
-sensor = PositionSensor(noise_mean=0.2, noise_std=1.5, dt=1,sample_size=50)
-position, velocity, acceleration, noise = sensor.data_set()
 
-print(position)
 
