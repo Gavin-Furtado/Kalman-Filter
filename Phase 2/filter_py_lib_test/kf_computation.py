@@ -24,7 +24,25 @@ class kalman_initial(object):
         return np.array([[self.acceleration[0][0]],
                          [self.acceleration[0][1]]])
 
-    def P_initial(self):
+    def P_initial(self,x_pos,y_pos,x_vel,y_vel):
+        '''
+        Needs verification
+
+        Attributes
+        ----------
+        x_pos : x-position process error
+        y_pos : y-position process error
+        x_vel : x-velocity process error
+        y_vel : y-velocity process error
+
+        Matrix
+        ------
+        np.array([[x-position-process-error**2,0,0,0],
+                  [0,y-position-process-error**2,0,0],
+                  [0,0,x-velocity-process-error**2,0],
+                  [0,0,0,y-velocity-process-error**2]])
+        '''
+        
         pass
 
 ## Step 1 - Predicted State ##
@@ -82,11 +100,6 @@ class Prediction(object):
     def P_predicted(self):
         pass
 
-# predict = Prediction(X,0,u) 
-# print(predict.X_predicted())
-# print(predict.u)
-# print(predict.B_matrix())
-
 ## Step 2 - Measurement from sensor ##
 
 
@@ -102,7 +115,11 @@ class updation(object):
     def __init__(self) -> None:
         pass
 
+    def C_matrix(self,Y):
+        pass
+
     def measurement(self):
+        # CYm + zk
         pass
 
     def P_updated(self):
