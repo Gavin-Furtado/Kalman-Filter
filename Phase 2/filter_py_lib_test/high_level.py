@@ -1,5 +1,6 @@
 import electronic_sensors as es 
 import graph as gr
+import kf_computation as kal
 import matplotlib.pyplot as plt
 
 ######### Sensor Data        #############
@@ -40,25 +41,8 @@ gaussian_noise_graph.gaussian_plot()
 
 ######## Converting sensor data into matrix format ##########
 
-print(position[3])
-print(velocity[3])
-print(acceleration[3])
-'''
-MatrixForm(position_x,position_y
-           velocity_x,velocity_y
-           acceleration_x, acceleration_y)
-
-MatrixForm.X_initial()
-MatricForm.u_initial()
-MatrixForm.P_initial() - Maybe
-'''
-
-# X = np.array([[position_data[3][0]],[position_data[3][1]],
-#               [velocity_data[3][0]],[velocity_data[3][1]]])
-
-# u = np.array([[acceleration_data[3][0]],
-#               [acceleration_data[3][1]]])
-
+matrix = kal.kalman_initial(position, velocity, acceleration)
+# print(matrix.P_initial(None,None, None,None))
 
 ## Step 0 - Initial State ##
 
@@ -66,6 +50,8 @@ MatrixForm.P_initial() - Maybe
 ## Previous State ##
 
 ## Step 1 - Predicted State ##
+prediction = kal.Prediction(matrix.X_initial(), None, matrix.u_initial())
+print(prediction.X_predicted())
 
 ## Step 2 - Measurement from sensor ##
 

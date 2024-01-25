@@ -10,17 +10,40 @@ AOCS Engineer
 
 import numpy as np
 
-class Initialization(object):
-    def __init__(self) -> None:
-        pass
+class kalman_initial(object):
+    def __init__(self,position, velocity, acceleration) -> None:
+        self.position = position
+        self.velocity = velocity
+        self.acceleration = acceleration
 
-    def X_initial():
-        pass
+    def X_initial(self):
+        return np.array([[self.position[0][0]], [self.position[0][1]],
+                         [self.velocity[0][0]], [self.velocity[0][1]]])
 
-    def u_initial():
-        pass
+    def u_initial(self):
+        return np.array([[self.acceleration[0][0]],
+                         [self.acceleration[0][1]]])
 
-    pass
+    def P_initial(self,x_pos,y_pos,x_vel,y_vel):
+        '''
+        Needs verification
+
+        Attributes
+        ----------
+        x_pos : x-position process error
+        y_pos : y-position process error
+        x_vel : x-velocity process error
+        y_vel : y-velocity process error
+
+        Matrix
+        ------
+        np.array([[x-position-process-error**2,0,0,0],
+                  [0,y-position-process-error**2,0,0],
+                  [0,0,x-velocity-process-error**2,0],
+                  [0,0,0,y-velocity-process-error**2]])
+        '''
+        
+        pass
 
 ## Step 1 - Predicted State ##
 class Prediction(object):
@@ -47,6 +70,10 @@ class Prediction(object):
             
         elif X_shape[0] == 1:
             self.A = np.array([[1.]])
+
+        else:
+            print('Matrix A dimension does not match state matrix')
+
         return self.A
 
     def B_matrix(self):
@@ -61,6 +88,10 @@ class Prediction(object):
                                [0., 0.5*self.dt**2],
                                [self.dt, 0.],
                                [0., self.dt]])
+            
+        else:
+            print('Matrix B dimension does not match control matrix')
+
         return self.B
 
     def X_predicted(self):
@@ -69,13 +100,30 @@ class Prediction(object):
     def P_predicted(self):
         pass
 
-predict = Prediction(X,0,u) 
-print(predict.X_predicted())
-# print(predict.u)
-print(predict.B_matrix())
-
 ## Step 2 - Measurement from sensor ##
 
+
+
 ## Step 3 - Kalman Gain ##
+class KalmanGain(object):
+    def __init__(self)-> None:
+        pass
+
 
 ## Step 4 - Update measurement & Kalman Gain ##
+class updation(object):
+    def __init__(self) -> None:
+        pass
+
+    def C_matrix(self,Y):
+        pass
+
+    def measurement(self):
+        # CYm + zk
+        pass
+
+    def P_updated(self):
+        pass
+
+    def X_updated(self):
+        pass
