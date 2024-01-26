@@ -1,60 +1,152 @@
+'''
+High level implementation of Kalman Filter algorithm
+
+
+Author
+------
+Gavin Furtado
+
+AOCS Engineer
+'''
+
 import electronic_sensors as es 
 import graph as gr
 import kf_computation as kal
 import matplotlib.pyplot as plt
+import numpy as np
 
-######### Sensor Data        #############
-sensor = es.PositionSensor(noise_mean=0.5, noise_std=1.5, dt=1,sample_size=50)
-position, velocity, acceleration, noise = sensor.data_set()
+def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
+    '''
+    Summary
 
-######### Data visualisation #############
+    Notes
+    -----
+    Array length is eqaul to the sample size that is user defined.
+    The dimensions of the array are constant i.e. 2-dimensions.
 
-# Creating a single graph window
-plt.figure(figsize=(10,5))
+    Attributes
+    ----------
+    position : a 2D array, x-cordinate & y-cordinate
+    velocity : a 2D array, x-dimension & y-dimension
+    acceleration : a 2D array, x-dimension & y-dimension
+    display_graph : boolean - True or False
 
-# Creating instance of PlotGraph class
-position_graph =gr.PlotGraph(plot_number=221, y1_data=position[:,0], y2_data=position[:,1],
-                             title='Position data from sensor', xlabel='Time (s)', ylabel='Position (m)',
-                             label_1='X-position',label_2='Y-position')
+    Returns
+    -------
+    '''
+    # Creating a single graph window
+    plt.figure(figsize=(10,5))
 
-velocity_graph = gr.PlotGraph(plot_number=222, y1_data=velocity[:,0], y2_data=velocity[:,1],
-                              title='Velocity data from sensor', xlabel='Time (s)', ylabel='Velocity (m/s)',
-                              label_1='X-velocity', label_2='Y-velocity')
+    # Creating instance of PlotGraph class
+    position_graph =gr.PlotGraph(plot_number=221, y1_data=position[:,0], y2_data=position[:,1],
+                                title='Position data from sensor', xlabel='Time (s)', ylabel='Position (m)',
+                                label_1='X-position',label_2='Y-position')
 
-acceleration_graph = gr.PlotGraph(plot_number=223, y1_data=acceleration[:,0], y2_data=acceleration[:,1],
-                              title='Acceleration data from sensor', xlabel='Time (s)', ylabel='Acceleration (m/s^2)',
-                              label_1='X-Acceleration', label_2='Y-Acceleration')
+    velocity_graph = gr.PlotGraph(plot_number=222, y1_data=velocity[:,0], y2_data=velocity[:,1],
+                                title='Velocity data from sensor', xlabel='Time (s)', ylabel='Velocity (m/s)',
+                                label_1='X-velocity', label_2='Y-velocity')
 
-gaussian_noise_graph = gr.PlotGraph(plot_number=224, y1_data=noise, title='Gaussian Noise Distribution',
-                                    xlabel='Noise values', ylabel='Probability Density',
-                                    bins=50, alpha=0.7, density=True)
+    acceleration_graph = gr.PlotGraph(plot_number=223, y1_data=acceleration[:,0], y2_data=acceleration[:,1],
+                                title='Acceleration data from sensor', xlabel='Time (s)', ylabel='Acceleration (m/s^2)',
+                                label_1='X-Acceleration', label_2='Y-Acceleration')
 
-# Calling methods of class PlotGraph 
-position_graph.scatter_plot()
-velocity_graph.scatter_plot()
-acceleration_graph.scatter_plot()
-gaussian_noise_graph.gaussian_plot()
+    gaussian_noise_graph = gr.PlotGraph(plot_number=224, y1_data=noise, title='Gaussian Noise Distribution',
+                                        xlabel='Noise values', ylabel='Probability Density',
+                                        bins=50, alpha=0.7, density=True)
 
-# #Display graph
-# plt.tight_layout()
-# plt.show()
+    # Calling methods of class PlotGraph 
+    position_graph.scatter_plot()
+    velocity_graph.scatter_plot()
+    acceleration_graph.scatter_plot()
+    gaussian_noise_graph.gaussian_plot()
+
+    # #Display graph
+    plt.tight_layout()
+    plt.show(block=display_graph)
+
+
+data = {'Current State':[],'Predicted State':[]}
+
+def main():
+    '''
+    The main function of the code.
+
+    It contains the high level logic.
+    '''
+    ## Sensor data ##
+    sensor = es.PositionSensor(noise_mean=0.5, noise_std=1.5, dt=1,sample_size=50)
+    position, velocity, acceleration, noise = sensor.data_set()
+
+    ## Data Visualisation ##
+    visulaise_data(position, velocity, acceleration, noise, False)
+
+    ## Kalman Filter Loop ##
+    for pos,vel,acc in zip(position,velocity,acceleration):    
+        state_matrix = np.array([[pos[0]],
+                                 [pos[1]],
+                                 [vel[0]],
+                                 [vel[1]]])
+        
+        control_matrix = np.array([[acc[1]],
+                                   [acc[1]]]) 
+
+        predict = kal.Prediction(state_matrix,None,control_matrix)
+        predict_state = predict.X_predicted()
+        # print(state_matrix, predict_state)
+
+        data['Current State'].append(state_matrix)
+        data['Predicted State'].append(predict_state)
+
+    
+    
+    # plt.figure(figsize=(10,5))
+    # compare = gr.PlotGraph(221,data['Current State'][1], data['Predicted State'][1],
+    #                 'Position-X in current vs predicted','time','position',
+    #                 'current state','predicted state')
+    # compare.scatter_plot()
+    # plt.show()
+
+        # kal.KalmanGain()
+
+        # kal.updation()
+
+    '''
+    I also want a class that just loops over the data
+    '''
+
+    '''
+    Classes of the module kalman filter
+
+    Prediction
+
+    Kalman Gain
+
+    Updation of State matrix
+    
+    '''
+
+if __name__ == '__main__':
+    main()
+
+
+
 
 ######## Converting sensor data into matrix format ##########
 
-matrix = kal.kalman_initial(position, velocity, acceleration)
-# print(matrix.P_initial(None,None, None,None))
+# matrix = kal.kalman_initial(position, velocity, acceleration)
+# # print(matrix.P_initial(None,None, None,None))
 
-## Step 0 - Initial State ##
+# ## Step 0 - Initial State ##
 
 
-## Previous State ##
+# ## Previous State ##
 
-## Step 1 - Predicted State ##
-prediction = kal.Prediction(matrix.X_initial(), None, matrix.u_initial())
-print(prediction.X_predicted())
+# ## Step 1 - Predicted State ##
+# prediction = kal.Prediction(matrix.X_initial(), None, matrix.u_initial())
+# print(prediction.X_predicted())
 
-## Step 2 - Measurement from sensor ##
+# ## Step 2 - Measurement from sensor ##
 
-## Step 3 - Kalman Gain ##
+# ## Step 3 - Kalman Gain ##
 
-## Step 4 - Update measurement & Kalman Gain ##
+# ## Step 4 - Update measurement & Kalman Gain ##

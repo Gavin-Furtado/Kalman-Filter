@@ -10,6 +10,18 @@ AOCS Engineer
 
 import numpy as np
 
+## Test phase ##
+class Test(object):
+    def __init__(self, position, velocity, acceleration):
+        self.position = position
+        self.velocity = velocity
+        self.acceleration = acceleration
+
+    def loop(self):
+        for _ in self.position:
+            print(_)
+        
+
 class kalman_initial(object):
     def __init__(self,position, velocity, acceleration) -> None:
         self.position = position
