@@ -10,6 +10,8 @@ AOCS Engineer
 
 import numpy as np
 
+## Test phase ##
+
 class kalman_initial(object):
     def __init__(self,position, velocity, acceleration) -> None:
         self.position = position
