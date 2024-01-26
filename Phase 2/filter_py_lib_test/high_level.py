@@ -13,6 +13,7 @@ import electronic_sensors as es
 import graph as gr
 import kf_computation as kal
 import matplotlib.pyplot as plt
+import numpy as np
 
 def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     '''
@@ -63,6 +64,9 @@ def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     plt.tight_layout()
     plt.show(block=display_graph)
 
+
+data = {'Current State':[],'Predicted State':[]}
+
 def main():
     '''
     The main function of the code.
@@ -77,9 +81,42 @@ def main():
     visulaise_data(position, velocity, acceleration, noise, False)
 
     ## Kalman Filter Loop ##
-    for p in position:
-        print(p)
+    for pos,vel,acc in zip(position,velocity,acceleration):    
+        state_matrix = np.array([[pos[0]],
+                                 [pos[1]],
+                                 [vel[0]],
+                                 [vel[1]]])
+        
+        control_matrix = np.array([[acc[1]],
+                                   [acc[1]]]) 
+
+        predict = kal.Prediction(state_matrix,None,control_matrix)
+        predict_state = predict.X_predicted()
+        # print(state_matrix, predict_state)
+
+        data['Current State'].append(state_matrix)
+        data['Predicted State'].append(predict_state)
+
+    
+    
+    # plt.figure(figsize=(10,5))
+    # compare = gr.PlotGraph(221,data['Current State'][1], data['Predicted State'][1],
+    #                 'Position-X in current vs predicted','time','position',
+    #                 'current state','predicted state')
+    # compare.scatter_plot()
+    # plt.show()
+
+        # kal.KalmanGain()
+
+        # kal.updation()
+
     '''
+    I also want a class that just loops over the data
+    '''
+
+    '''
+    Classes of the module kalman filter
+
     Prediction
 
     Kalman Gain
