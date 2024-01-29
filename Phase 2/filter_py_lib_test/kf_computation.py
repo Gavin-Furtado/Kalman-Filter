@@ -105,6 +105,7 @@ class kalman_initial(object):
     def P_initial(self,x_pos_err,y_pos_err,x_vel_err,y_vel_err):
         '''
         Needs verification but mostly feels right
+        Compute the initial process covariance matrix
 
         Attributes
         ----------
@@ -180,6 +181,9 @@ class Prediction(object):
         return (A_matrix(self.X_previous)@self.X_previous) + (B_matrix(self.u)@self.u) #+ self.w 
 
     def P_predicted(self):
+        '''
+        A.P_prev.A^T + Q
+        '''
         pass
 
 ## Step 2 - Measurement from sensor ##
