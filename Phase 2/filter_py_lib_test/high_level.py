@@ -14,6 +14,7 @@ import graph as gr
 import kf_computation as kal
 import matplotlib.pyplot as plt
 import numpy as np
+from constants import dt
 
 def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     '''
@@ -74,11 +75,11 @@ def main():
     It contains the high level logic.
     '''
     ## Sensor data ##
-    sensor = es.PositionSensor(noise_mean=0.5, noise_std=1.5, dt=1,sample_size=50)
+    sensor = es.PositionSensor(noise_mean=0.5, noise_std=1.5, dt=dt ,sample_size=50)
     position, velocity, acceleration, noise = sensor.data_set()
 
     ## Data Visualisation ##
-    visulaise_data(position, velocity, acceleration, noise, False)
+    #visulaise_data(position, velocity, acceleration, noise, True)
 
     ## Kalman Filter Loop ##
     for pos,vel,acc in zip(position,velocity,acceleration):    
@@ -92,23 +93,28 @@ def main():
 
         predict = kal.Prediction(state_matrix,None,control_matrix)
         predict_state = predict.X_predicted()
-        # print(state_matrix, predict_state)
+        print(state_matrix, predict_state)
 
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
 
-    
-    
-    # plt.figure(figsize=(10,5))
-    # compare = gr.PlotGraph(221,data['Current State'][1], data['Predicted State'][1],
-    #                 'Position-X in current vs predicted','time','position',
-    #                 'current state','predicted state')
-    # compare.scatter_plot()
-    # plt.show()
+    ## Conversion to arrays for ease of plotting
+    data_current_state = np.array(data['Current State'])
+    data_predicted_state = np.array(data['Predicted State'])
+    # print(data['Current State'],temp_data[:,0,0])
+        
+    ## Testing the data on graph
+    plt.figure(figsize=(10,5))
+    compare = gr.PlotGraph(111,data_current_state[:,0,0], data_predicted_state[:,0,0] ,
+                    'Position in X direction','time','position',
+                    'current state','predicted state')
+    compare.scatter_plot()
+    plt.show()
 
-        # kal.KalmanGain()
 
-        # kal.updation()
+    # kal.KalmanGain()
+
+    # kal.updation()
 
     '''
     I also want a class that just loops over the data

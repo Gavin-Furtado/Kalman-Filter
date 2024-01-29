@@ -9,6 +9,7 @@ AOCS Engineer
 '''
 
 import numpy as np
+from constants import dt
 
 ## Test phase ##
 class Test(object):
@@ -20,9 +21,74 @@ class Test(object):
     def loop(self):
         for _ in self.position:
             print(_)
+
+def A_matrix(matrix):
+    '''
+
+    returns
+    -------
+    Matrix/array of size 1x1, 2x2, 4x4
+    '''
+    # Computing Matrix A, B
+    mat_shape = matrix.shape  #(4,1)
+
+    if mat_shape[0] == 4: 
+        A = np.array([[1., 0., dt, 0.],
+                      [0., 1., 0., dt],
+                      [0., 0., 1., 0.],
+                      [0., 0., 0., 1.]])
         
+    elif mat_shape[0] == 2:
+        A = np.array([[1., dt],
+                      [0., 1.]]) 
+        
+    elif mat_shape[0] == 1:
+        A = np.array([[1.]])
+
+    else:
+        raise ValueError('Matrix A dimension does not match state/process covariance matrix')
+
+    return A      
+
+def B_matrix(matrix):
+    '''
+    returns
+    -------
+    Matrix/array of size  2x2, 4x4
+    '''
+    mat_shape = matrix.shape # 2,1
+    
+    if mat_shape[0] == 1: 
+        B = np.array([[0.5*dt**2],
+                      [dt**2]])
+
+    elif mat_shape[0] == 2:
+        B = np.array([[0.5*dt**2, 0.],
+                      [0., 0.5*dt**2],
+                      [dt, 0.],
+                      [0., dt]])
+        
+    else:
+        raise ValueError('Matrix B dimension does not match control matrix')
+
+    return B
 
 class kalman_initial(object):
+    '''
+    Initalisition of parameters required in Kalman filter algorithm.
+
+    Attributes
+    ----------
+    position : An array of 2-Dimensional array of x & y position coordinates
+    velocity : An array of 2-Dimensional array of x & y velocities
+    acceleration : An array of 2-Dimensional array of x & y acceleration
+
+    Methods
+    -------
+    X_initial : Not required anymore 
+    u_initial : Not required anymore
+    P_initial : 
+    '''
     def __init__(self,position, velocity, acceleration) -> None:
         self.position = position
         self.velocity = velocity
@@ -38,7 +104,7 @@ class kalman_initial(object):
 
     def P_initial(self,x_pos,y_pos,x_vel,y_vel):
         '''
-        Needs verification
+        Needs verification but mostly feels right
 
         Attributes
         ----------
@@ -59,7 +125,7 @@ class kalman_initial(object):
 
 ## Step 1 - Predicted State ##
 class Prediction(object):
-    def __init__(self, X_previous, P_previous, u, dt=2., w=0, Q=0) -> None:
+    def __init__(self, X_previous, P_previous, u, dt=dt, w=0, Q=0) -> None:
         self.X_previous = X_previous
         self.u = u
         self.w = w
@@ -107,7 +173,8 @@ class Prediction(object):
         return self.B
 
     def X_predicted(self):
-        return (self.A_matrix()@self.X_previous) + (self.B_matrix()@self.u) #+ self.w 
+        # return (self.A_matrix()@self.X_previous) + (self.B_matrix()@self.u) #+ self.w 
+        return (A_matrix(self.X_previous)@self.X_previous) + (B_matrix(self.u)@self.u) #+ self.w 
 
     def P_predicted(self):
         pass
