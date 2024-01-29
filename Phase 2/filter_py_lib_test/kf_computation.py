@@ -102,7 +102,7 @@ class kalman_initial(object):
         return np.array([[self.acceleration[0][0]],
                          [self.acceleration[0][1]]])
 
-    def P_initial(self,x_pos,y_pos,x_vel,y_vel):
+    def P_initial(self,x_pos_err,y_pos_err,x_vel_err,y_vel_err):
         '''
         Needs verification but mostly feels right
 
@@ -120,8 +120,11 @@ class kalman_initial(object):
                   [0,0,x-velocity-process-error**2,0],
                   [0,0,0,y-velocity-process-error**2]])
         '''
-        
-        pass
+        P = np.array([[x_pos_err**2,0,0,0],
+                      [0,y_pos_err**2,0,0],
+                      [0,0,x_vel_err**2,0],
+                      [0,0,0,y_vel_err**2]])
+        return P
 
 ## Step 1 - Predicted State ##
 class Prediction(object):

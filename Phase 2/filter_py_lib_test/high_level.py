@@ -81,6 +81,10 @@ def main():
     ## Data Visualisation ##
     #visulaise_data(position, velocity, acceleration, noise, True)
 
+    ## Initalisation ##
+    covar = kal.kalman_initial(position,velocity, acceleration)
+    print(covar.P_initial(2,1,5,3))
+
     ## Kalman Filter Loop ##
     for pos,vel,acc in zip(position,velocity,acceleration):    
         state_matrix = np.array([[pos[0]],
@@ -93,7 +97,7 @@ def main():
 
         predict = kal.Prediction(state_matrix,None,control_matrix)
         predict_state = predict.X_predicted()
-        print(state_matrix, predict_state)
+        # print(state_matrix, predict_state)
 
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
