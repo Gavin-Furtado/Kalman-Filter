@@ -16,6 +16,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from constants import dt
 
+'''
+Things to go
+1. verify the Process covarinace matrix, the last two rows do not seem to change
+2. build kalman filter class
+3. Measurement matrix Y
+'''
+
+
 def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     '''
     Summary
@@ -84,9 +92,11 @@ def main():
     ## Initalisation ##
     covar = kal.kalman_initial(position,velocity, acceleration)
     P_initial = covar.P_initial(2,1,5,3)
-    P_predict = kal.Prediction(None,None,None)
+    
+    # P_predict = kal.Prediction(None,None,None)
+    # print(P_predict.P_predicted(P_initial))
 
-    print(P_predict.P_predicted(P_initial))
+    P_prev = P_initial
 
     ## Kalman Filter Loop ##
     for idx, (pos,vel,acc) in enumerate(zip(position,velocity,acceleration)):    
@@ -98,26 +108,52 @@ def main():
         control_matrix = np.array([[acc[1]],
                                    [acc[1]]]) 
 
-        predict = kal.Prediction(state_matrix,Process_matrix,control_matrix)
+        # predict = kal.Prediction(state_matrix,None,control_matrix)
+        # predict_state = predict.X_predicted()
+        
+        # Prediction stage
+        predict = kal.Prediction(state_matrix,P_prev,control_matrix)
         predict_state = predict.X_predicted()
+        predict_P = predict.P_predicted()
+
         '''
+        Now you need kalman gain
+        '''
+
+        # Updation
+        P_prev = predict_P
+        print(predict_P, P_prev)
+        '''
+        The last two rows are not changing
+        '''
+        
+        '''
+        Brainstroming ideas
+        ----
+
+        predicted_P = predict.P_predicted()
         if idx == 0:
             predict_covar = predict.P_predicted(P_initial)
             pass
         else: 
             predict_covar = predict.P_predicted(P_prev)
 
-        
+        P_prev = P_predicted
         '''
-        # print(state_matrix, predict_state)
 
+        # Storing values in a dictionary
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
 
     ## Conversion to arrays for ease of plotting
     data_current_state = np.array(data['Current State'])
     data_predicted_state = np.array(data['Predicted State'])
+    
+    '''
+    This is the way to extract data from dictionary that would fit the 
+    class PlotGraph
     # print(data['Current State'],temp_data[:,0,0])
+    '''
         
     ## Testing the data on graph
     plt.figure(figsize=(10,5))

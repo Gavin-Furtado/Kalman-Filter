@@ -38,5 +38,5 @@ Role
 AOCS Engineer
 '''
 
-## The time interval inn seconds
+## The time interval in seconds
 dt = 1.

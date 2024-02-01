@@ -141,12 +141,28 @@ class Prediction(object):
         # return (self.A_matrix()@self.X_previous) + (self.B_matrix()@self.u) #+ self.w 
         return (A_matrix(self.X_previous)@self.X_previous) + (B_matrix(self.u)@self.u) #+ self.w 
 
-    def P_predicted(self,P_previous):
+    def P_predicted(self):
         '''
         A.P_prev.A^T + Q
         '''
-        P = P_previous
-        return  A_matrix(P)@P@A_matrix(P).transpose() #+Q
+        prev = self.P_previous
+        P = A_matrix(prev)@prev@A_matrix(prev).transpose() #+Q
+        
+        ## Simplyfing the calcuations
+        P[0][1] = 0 
+        P[0][2] = 0
+        P[0][1] = 0
+        P[1][0] = 0
+        P[1][2] = 0
+        P[1][3] = 0
+        P[2][0] = 0
+        P[2][1] = 0
+        P[2][3] = 0
+        P[3][0] = 0
+        P[3][1] = 0
+        P[3][2] = 0
+
+        return P 
 
 ## Step 2 - Measurement from sensor ##
 
