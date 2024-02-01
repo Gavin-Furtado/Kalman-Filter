@@ -137,45 +137,6 @@ class Prediction(object):
         self.P_previous = P_previous
         self.Q = Q
 
-    def A_matrix(self):
-        # Computing Matrix A, B
-        X_shape = self.X_previous.shape  #(4,1)
-
-        if X_shape[0] == 4: 
-            self.A = np.array([[1., 0., self.dt, 0.],
-                               [0., 1., 0., self.dt],
-                               [0., 0., 1., 0.],
-                               [0., 0., 0., 1.]])
-        elif X_shape[0] == 2:
-            self.A = np.array([[1., self.dt],
-                               [0., 1.]]) 
-            
-        elif X_shape[0] == 1:
-            self.A = np.array([[1.]])
-
-        else:
-            print('Matrix A dimension does not match state matrix')
-
-        return self.A
-
-    def B_matrix(self):
-        u_shape = self.u.shape # 2,1
-        
-        if u_shape[0] == 1: 
-            self.B = np.array([[0.5*self.dt**2],
-                               [self.dt**2]])
-
-        elif u_shape[0] == 2:
-            self.B = np.array([[0.5*self.dt**2, 0.],
-                               [0., 0.5*self.dt**2],
-                               [self.dt, 0.],
-                               [0., self.dt]])
-            
-        else:
-            print('Matrix B dimension does not match control matrix')
-
-        return self.B
-
     def X_predicted(self):
         # return (self.A_matrix()@self.X_previous) + (self.B_matrix()@self.u) #+ self.w 
         return (A_matrix(self.X_previous)@self.X_previous) + (B_matrix(self.u)@self.u) #+ self.w 
@@ -184,7 +145,24 @@ class Prediction(object):
         '''
         A.P_prev.A^T + Q
         '''
-        pass
+        prev = self.P_previous
+        P = A_matrix(prev)@prev@A_matrix(prev).transpose() #+Q
+        
+        ## Simplyfing the calcuations
+        P[0][1] = 0 
+        P[0][2] = 0
+        P[0][1] = 0
+        P[1][0] = 0
+        P[1][2] = 0
+        P[1][3] = 0
+        P[2][0] = 0
+        P[2][1] = 0
+        P[2][3] = 0
+        P[3][0] = 0
+        P[3][1] = 0
+        P[3][2] = 0
+
+        return P 
 
 ## Step 2 - Measurement from sensor ##
 
