@@ -83,7 +83,10 @@ def main():
 
     ## Initalisation ##
     covar = kal.kalman_initial(position,velocity, acceleration)
-    print(covar.P_initial(2,1,5,3))
+    P_initial = covar.P_initial(2,1,5,3)
+    P_predict = kal.Prediction(None,None,None)
+
+    print(P_predict.P_predicted(P_initial))
 
     ## Kalman Filter Loop ##
     for idx, (pos,vel,acc) in enumerate(zip(position,velocity,acceleration)):    
@@ -95,14 +98,16 @@ def main():
         control_matrix = np.array([[acc[1]],
                                    [acc[1]]]) 
 
-        predict = kal.Prediction(state_matrix,None,control_matrix)
+        predict = kal.Prediction(state_matrix,Process_matrix,control_matrix)
         predict_state = predict.X_predicted()
         '''
         if idx == 0:
             predict_covar = predict.P_predicted(P_initial)
             pass
         else: 
-            predict_covar = predict.P_predicted(P_initial)
+            predict_covar = predict.P_predicted(P_prev)
+
+        
         '''
         # print(state_matrix, predict_state)
 
