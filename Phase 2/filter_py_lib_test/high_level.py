@@ -87,7 +87,7 @@ def main():
     position, velocity, acceleration, noise = sensor.data_set()
 
     ## Data Visualisation ##
-    #visulaise_data(position, velocity, acceleration, noise, True)
+    visulaise_data(position, velocity, acceleration, noise, True)
 
     ## Initalisation ##
     covar = kal.kalman_initial(position,velocity, acceleration)
