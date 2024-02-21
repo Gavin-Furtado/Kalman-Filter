@@ -1,3 +1,43 @@
+'''
+Modue name
+----------
+graph
+
+Module summary
+--------------
+Module that simplifies the coding process to plot graphs
+
+Usage
+-----
+This module is is used to plot different graphs like scatter plot, gaussian plot 
+and reduces number of lines of repetitive code. 
+
+Example
+-------
+Here is an example of how to use this module in projects.
+```python
+import graph as gr
+
+position_graph =gr.PlotGraph(plot_number=221, y1_data=position[:,0], 
+y2_data=position[:,1],title='Position data from sensor', xlabel='Time (s)', 
+ylabel='Position (m)',label_1='X-position',label_2='Y-position')
+
+position_graph.scatter_plot()
+
+## Display graph
+plt.tight_layout()
+plt.show()
+
+```python
+
+Author
+------
+Gavin Furtado
+
+Role
+----
+AOCS Engineer
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 
