@@ -98,7 +98,7 @@ def main():
     # print(P_predict.P_predicted(P_initial))
 
     P_prev = P_initial
-
+    
     ## Kalman Filter Loop ##
     for idx, (pos,vel,acc) in enumerate(zip(position,velocity,acceleration)):    
         state_matrix = np.array([[pos[0]],
@@ -117,8 +117,13 @@ def main():
         predict_state = predict.X_predicted()
         predict_P = predict.P_predicted()
 
+        # Kalman Gain
+        R = kal.R_matrix(4,5,2,9)
+        K = kal.KalmanGain(predict_P,R)
+        
+        print(state_matrix)
         '''
-        Now you need kalman gain
+        Y matrix is just the same as state matrix without Z
         '''
 
         # Updation
