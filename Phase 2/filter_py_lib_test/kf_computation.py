@@ -146,7 +146,8 @@ class Prediction(object):
         A.P_prev.A^T + Q
         '''
         prev = self.P_previous
-        P = A_matrix(prev)@prev@A_matrix(prev).transpose() #+Q
+        print(prev)
+        P = A_matrix(prev)@prev@(A_matrix(prev).transpose()) #+Q
         
         ## Simplyfing the calcuations
         P[0][1] = 0 

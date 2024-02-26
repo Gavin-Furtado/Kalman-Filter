@@ -19,6 +19,7 @@ from constants import dt
 '''
 Things to go
 1. verify the Process covarinace matrix, the last two rows do not seem to change
+    I checked this on matrix calculator the numbers are right
 2. build kalman filter class
 3. Measurement matrix Y
 '''
@@ -91,7 +92,7 @@ def main():
 
     ## Initalisation ##
     covar = kal.kalman_initial(position,velocity, acceleration)
-    P_initial = covar.P_initial(2,1,5,3)
+    P_initial = covar.P_initial(2,1,8,7)
     
     # P_predict = kal.Prediction(None,None,None)
     # print(P_predict.P_predicted(P_initial))
@@ -122,7 +123,8 @@ def main():
 
         # Updation
         P_prev = predict_P
-        print(predict_P, P_prev)
+        # print(predict_P, P_prev)
+        # print(predict_P)
         '''
         The last two rows are not changing
         '''
