@@ -146,7 +146,7 @@ class Prediction(object):
         A.P_prev.A^T + Q
         '''
         prev = self.P_previous
-        P = A_matrix(prev)@prev@A_matrix(prev).transpose() #+Q
+        P = A_matrix(prev)@prev@(A_matrix(prev).transpose()) #+Q
         
         ## Simplyfing the calcuations
         P[0][1] = 0 
@@ -169,10 +169,61 @@ class Prediction(object):
 
 
 ## Step 3 - Kalman Gain ##
-class KalmanGain(object):
-    def __init__(self)-> None:
-        pass
+def H_matrix():
+    '''
+    Transformation matrix for easy of multiplication.
+    In this case it is 4x4 identity matrix
+    '''
+    return np.array([[1,0,0,0],
+                      [0,1,0,0],
+                      [0,0,1,0],
+                      [0,0,0,1],])
 
+def R_matrix(x_pos_obs_err,y_pos_obs_err,x_vel_obs_err,y_vel_obs_err):
+    '''
+    Observation error matrix
+
+    Attributes
+    ----------
+    x_pos : x-position observation error
+    y_pos : y-position observation error
+    x_vel : x-velocity observation error
+    y_vel : y-velocity observation error
+
+    Matrix
+    ------
+    np.array([[x-position-observation-error**2,0,0,0],
+              [0,y-position-observation-error**2,0,0],
+              [0,0,x-velocity-observation-error**2,0],
+              [0,0,0,y-velocity-observation-error**2]])
+    '''
+    R = np.array([[x_pos_obs_err**2,0,0,0],
+                    [0,y_pos_obs_err**2,0,0],
+                    [0,0,x_vel_obs_err**2,0],
+                    [0,0,0,y_vel_obs_err**2]])
+    return R
+
+
+def KalmanGain(P, R):
+    '''
+    K = P_predict . H^T / (H.P_predict.H^T  + R)
+    '''
+    numerator = P@H_matrix().transpose()
+    denominator = H_matrix()@P@H_matrix().transpose() + R
+    k = numerator @ np.linalg.inv(denominator)
+    return k
+
+## Step 4 - Measurement input
+def measurement_input():
+    '''
+    Y = C.X + Z
+    '''
+    C = np.array([[1,0,0,0],
+                  [0,1,0,0],
+                  [0,0,1,0],
+                  [0,0,0,1],])
+    
+    return 
 
 ## Step 4 - Update measurement & Kalman Gain ##
 class updation(object):
