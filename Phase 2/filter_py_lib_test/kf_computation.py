@@ -214,7 +214,7 @@ def KalmanGain(P, R):
     return k
 
 ## Step 4 - Measurement input
-def measurement_input():
+def measurement_input(X):
     '''
     Y = C.X + Z
     '''
@@ -222,23 +222,27 @@ def measurement_input():
                   [0,1,0,0],
                   [0,0,1,0],
                   [0,0,0,1],])
-    
-    return 
+    Y = C@X #+Z
+    return Y
 
 ## Step 4 - Update measurement & Kalman Gain ##
 class updation(object):
-    def __init__(self) -> None:
-        pass
-
-    def C_matrix(self,Y):
-        pass
-
-    def measurement(self):
-        # CYm + zk
-        pass
+    def __init__(self,K,Y, predict_P,predict_state) -> None:
+        self.K = K
+        self.Y = Y 
+        self.predict_P = predict_P
+        self.predict_state = predict_state
 
     def P_updated(self):
-        pass
+        '''
+        Calculating the updated value process covariance matrix
+        '''
+        I = H_matrix()
+        P_updated = (I - self.K@H_matrix()) @ self.predict_P
+        return P_updated
 
     def X_updated(self):
-        pass
+        '''
+        Calculating the updated value state matrix
+        '''
+        return self.predict_state + self.K@(self.Y - H_matrix()@self.predict_state)
