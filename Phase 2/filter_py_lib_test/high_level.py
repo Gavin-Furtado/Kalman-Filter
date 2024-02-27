@@ -75,7 +75,7 @@ def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     plt.show(block=display_graph)
 
 
-data = {'Current State':[],'Predicted State':[]}
+data = {'Current State':[],'Predicted State':[],'Updated State':[]}
 
 def main():
     '''
@@ -121,18 +121,25 @@ def main():
         R = kal.R_matrix(4,5,2,9)
         K = kal.KalmanGain(predict_P,R)
         
-        print(state_matrix)
         '''
         Y matrix is just the same as state matrix without Z
         '''
+    	# Measurement input
+        Y = kal.measurement_input(state_matrix)
 
         # Updation
-        P_prev = predict_P
+        update = kal.updation(K,Y,predict_P,predict_state)
+        updated_state = update.X_updated()
+        updated_P = update.P_updated()
+
+              
+
+        # Updation / Is this right
+        P_prev = updated_P
+        X_prev = updated_state
         # print(predict_P, P_prev)
         # print(predict_P)
-        '''
-        The last two rows are not changing
-        '''
+       
         
         '''
         Brainstroming ideas
@@ -151,11 +158,13 @@ def main():
         # Storing values in a dictionary
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
+        data['Updated State'].append(updated_state)
 
     ## Conversion to arrays for ease of plotting
     data_current_state = np.array(data['Current State'])
     data_predicted_state = np.array(data['Predicted State'])
-    
+    data_updated_state = np.array(data['Updated State'])
+    print(data_current_state, data_current_state[:,1,0])
     '''
     This is the way to extract data from dictionary that would fit the 
     class PlotGraph
@@ -164,54 +173,33 @@ def main():
         
     ## Testing the data on graph
     plt.figure(figsize=(10,5))
-    compare = gr.PlotGraph(111,data_current_state[:,0,0], data_predicted_state[:,0,0] ,
+    compare_x_pos = gr.PlotGraph(221,data_current_state[:,0,0], data_predicted_state[:,0,0] , data_updated_state[:,0,0],
                     'Position in X direction','time','position',
-                    'current state','predicted state')
-    compare.scatter_plot()
+                    'current state','predicted state', 'updated state')
+    compare_x_pos.scatter_plot()
+    compare_x_pos.line_plot()
+    
+    compare_y_pos = gr.PlotGraph(222,data_current_state[:,1,0], data_predicted_state[:,1,0] , data_updated_state[:,1,0],
+                    'Position in Y direction','time','position',
+                    'current state','predicted state', 'updated state')
+    compare_y_pos.scatter_plot()
+    compare_y_pos.line_plot()
+
+    # plt.figure(figsize=(10,5))
+    compare_x_vel = gr.PlotGraph(223,data_current_state[:,2,0], data_predicted_state[:,2,0] , data_updated_state[:,2,0],
+                    'Velocity in X direction','time','velocity',
+                    'current state','predicted state', 'updated state')
+    compare_x_vel.scatter_plot()
+    compare_x_vel.line_plot()
+    
+    compare_y_vel = gr.PlotGraph(224,data_current_state[:,3,0], data_predicted_state[:,3,0] , data_updated_state[:,3,0],
+                    'Velocity in Y direction','time','velocity',
+                    'current state','predicted state', 'updated state')
+    compare_y_vel.scatter_plot()
+    compare_y_vel.line_plot()
+
     plt.show()
 
 
-    # kal.KalmanGain()
-
-    # kal.updation()
-
-    '''
-    I also want a class that just loops over the data
-    '''
-
-    '''
-    Classes of the module kalman filter
-
-    Prediction
-
-    Kalman Gain
-
-    Updation of State matrix
-    
-    '''
-
 if __name__ == '__main__':
     main()
-
-
-
-
-######## Converting sensor data into matrix format ##########
-
-# matrix = kal.kalman_initial(position, velocity, acceleration)
-# # print(matrix.P_initial(None,None, None,None))
-
-# ## Step 0 - Initial State ##
-
-
-# ## Previous State ##
-
-# ## Step 1 - Predicted State ##
-# prediction = kal.Prediction(matrix.X_initial(), None, matrix.u_initial())
-# print(prediction.X_predicted())
-
-# ## Step 2 - Measurement from sensor ##
-
-# ## Step 3 - Kalman Gain ##
-
-# ## Step 4 - Update measurement & Kalman Gain ##
