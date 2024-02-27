@@ -18,10 +18,12 @@ from constants import dt
 
 '''
 Things to go
-1. verify the Process covarinace matrix, the last two rows do not seem to change
-    I checked this on matrix calculator the numbers are right
-2. build kalman filter class
-3. Measurement matrix Y
+1. Check the calculations, the graphs tell there is something wrong
+2. Make the code more professional
+    a. Proper names for modules, variables, classes
+    b. docstrings
+    c. github documentation
+3. Think of GUI if possible
 '''
 
 
@@ -91,13 +93,16 @@ def main():
     visulaise_data(position, velocity, acceleration, noise, True)
 
     ## Initalisation ##
-    covar = kal.kalman_initial(position,velocity, acceleration)
-    P_initial = covar.P_initial(2,1,8,7)
-    
+    initialisation = kal.kalman_initial(position,velocity, acceleration)
+    P_initial = initialisation.P_initial(2,1,8,7)
+    X_initial = initialisation.X_initial()
+    #print(f'The initial state matrix= {X_initial}')
+
     # P_predict = kal.Prediction(None,None,None)
     # print(P_predict.P_predicted(P_initial))
 
     P_prev = P_initial
+    X_prev = X_initial
     
     ## Kalman Filter Loop ##
     for idx, (pos,vel,acc) in enumerate(zip(position,velocity,acceleration)):    
@@ -105,7 +110,7 @@ def main():
                                  [pos[1]],
                                  [vel[0]],
                                  [vel[1]]])
-        
+        #print(f'The state matrix in the loop= {state_matrix}')
         control_matrix = np.array([[acc[1]],
                                    [acc[1]]]) 
 
@@ -113,7 +118,8 @@ def main():
         # predict_state = predict.X_predicted()
         
         # Prediction stage
-        predict = kal.Prediction(state_matrix,P_prev,control_matrix)
+        # predict = kal.Prediction(state_matrix,P_prev,control_matrix)
+        predict = kal.Prediction(X_prev,P_prev,control_matrix)
         predict_state = predict.X_predicted()
         predict_P = predict.P_predicted()
 
@@ -121,40 +127,19 @@ def main():
         R = kal.R_matrix(4,5,2,9)
         K = kal.KalmanGain(predict_P,R)
         
-        '''
-        Y matrix is just the same as state matrix without Z
-        '''
-    	# Measurement input
+        # Measurement input
         Y = kal.measurement_input(state_matrix)
 
         # Updation
         update = kal.updation(K,Y,predict_P,predict_state)
         updated_state = update.X_updated()
-        updated_P = update.P_updated()
-
-              
+        updated_P = update.P_updated()      
 
         # Updation / Is this right
         P_prev = updated_P
         X_prev = updated_state
         # print(predict_P, P_prev)
-        # print(predict_P)
-       
         
-        '''
-        Brainstroming ideas
-        ----
-
-        predicted_P = predict.P_predicted()
-        if idx == 0:
-            predict_covar = predict.P_predicted(P_initial)
-            pass
-        else: 
-            predict_covar = predict.P_predicted(P_prev)
-
-        P_prev = P_predicted
-        '''
-
         # Storing values in a dictionary
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
@@ -164,7 +149,7 @@ def main():
     data_current_state = np.array(data['Current State'])
     data_predicted_state = np.array(data['Predicted State'])
     data_updated_state = np.array(data['Updated State'])
-    print(data_current_state, data_current_state[:,1,0])
+    
     '''
     This is the way to extract data from dictionary that would fit the 
     class PlotGraph
