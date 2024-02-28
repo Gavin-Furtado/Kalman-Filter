@@ -25,6 +25,7 @@ Phase 2️⃣:  week 3 of November 2023 to Present
 
 ### Phase 2
 In progress....
+![Kalman filter results](Results/Phase2_results_1.png)
 
 ## 📑 References
 
