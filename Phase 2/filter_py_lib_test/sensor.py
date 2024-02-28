@@ -1,7 +1,7 @@
 '''
 Modue name
 ----------
-electronic_sensor
+sensor
 
 Module summary
 --------------
