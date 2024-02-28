@@ -19,6 +19,8 @@ from constants import dt
 '''
 Things to go
 1. Check the calculations, the graphs tell there is something wrong
+    When you use sample size of 20 it is clear, as the sample size increases the kalman filter algorithm 
+    starts building trust with predicted values over measured values
 2. Make the code more professional
     a. Proper names for modules, variables, classes
     b. docstrings
@@ -73,6 +75,7 @@ def visulaise_data(position, velocity, acceleration, noise, display_graph=bool):
     gaussian_noise_graph.gaussian_plot()
 
     # #Display graph
+    plt.suptitle('Accelerometer Data')
     plt.tight_layout()
     plt.show(block=display_graph)
 
@@ -86,21 +89,17 @@ def main():
     It contains the high level logic.
     '''
     ## Sensor data ##
-    sensor = es.PositionSensor(noise_mean=0.5, noise_std=1.5, dt=dt ,sample_size=50)
+    sensor = es.PositionSensor(noise_mean=1.0, noise_std=1.5, dt=dt ,sample_size=10)
     position, velocity, acceleration, noise = sensor.data_set()
 
     ## Data Visualisation ##
-    visulaise_data(position, velocity, acceleration, noise, True)
+    visulaise_data(position, velocity, acceleration, noise, False)
 
     ## Initalisation ##
     initialisation = kal.kalman_initial(position,velocity, acceleration)
     P_initial = initialisation.P_initial(2,1,8,7)
     X_initial = initialisation.X_initial()
-    #print(f'The initial state matrix= {X_initial}')
-
-    # P_predict = kal.Prediction(None,None,None)
-    # print(P_predict.P_predicted(P_initial))
-
+    
     P_prev = P_initial
     X_prev = X_initial
     
@@ -124,7 +123,7 @@ def main():
         predict_P = predict.P_predicted()
 
         # Kalman Gain
-        R = kal.R_matrix(4,5,2,9)
+        R = kal.R_matrix(3,1,2,1)
         K = kal.KalmanGain(predict_P,R)
         
         # Measurement input
@@ -135,11 +134,9 @@ def main():
         updated_state = update.X_updated()
         updated_P = update.P_updated()      
 
-        # Updation / Is this right
-        P_prev = updated_P
         X_prev = updated_state
-        # print(predict_P, P_prev)
-        
+        P_prev = updated_P
+                
         # Storing values in a dictionary
         data['Current State'].append(state_matrix)
         data['Predicted State'].append(predict_state)
@@ -159,30 +156,32 @@ def main():
     ## Testing the data on graph
     plt.figure(figsize=(10,5))
     compare_x_pos = gr.PlotGraph(221,data_current_state[:,0,0], data_predicted_state[:,0,0] , data_updated_state[:,0,0],
-                    'Position in X direction','time','position',
-                    'current state','predicted state', 'updated state')
+                    'Position in X direction','time(s)','position(m)',
+                    'Measurement','Prediction', 'Kalman filter')
     compare_x_pos.scatter_plot()
     compare_x_pos.line_plot()
     
     compare_y_pos = gr.PlotGraph(222,data_current_state[:,1,0], data_predicted_state[:,1,0] , data_updated_state[:,1,0],
-                    'Position in Y direction','time','position',
-                    'current state','predicted state', 'updated state')
+                    'Position in Y direction','time(s)','position(m)',
+                    'Measurement','Prediction', 'Kalman filter')
     compare_y_pos.scatter_plot()
     compare_y_pos.line_plot()
 
     # plt.figure(figsize=(10,5))
     compare_x_vel = gr.PlotGraph(223,data_current_state[:,2,0], data_predicted_state[:,2,0] , data_updated_state[:,2,0],
-                    'Velocity in X direction','time','velocity',
-                    'current state','predicted state', 'updated state')
+                    'Velocity in X direction','time(s)','velocity(m/s)',
+                    'Measurement','Prediction', 'Kalman filter')
     compare_x_vel.scatter_plot()
     compare_x_vel.line_plot()
     
     compare_y_vel = gr.PlotGraph(224,data_current_state[:,3,0], data_predicted_state[:,3,0] , data_updated_state[:,3,0],
-                    'Velocity in Y direction','time','velocity',
-                    'current state','predicted state', 'updated state')
+                    'Velocity in Y direction','time(s)','velocity(m/s)',
+                    'Measurement','Prediction', 'Kalman filter')
     compare_y_vel.scatter_plot()
     compare_y_vel.line_plot()
 
+    plt.suptitle('Kalman Filter Algorithm on Accelerometer data')
+    plt.tight_layout()
     plt.show()
 
 
