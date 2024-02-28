@@ -1,7 +1,7 @@
 '''
 Modue name
 ----------
-graph
+visualization
 
 Module summary
 --------------
@@ -75,15 +75,8 @@ class PlotGraph(object):
         plt.legend()
 
     def line_plot(self):
-        #plt.subplot(self.plot_number)
         x_data=np.arange(len(self.y1_data))        
         plt.plot(x_data, self.y3_data,'g-', label = self.label_3)
-        # plt.grid(which='major',color='#DDDDDD',linewidth=0.5)
-        # plt.grid(which='minor',color='#EEEEEE', linestyle=':',linewidth =0.6)
-        # plt.minorticks_on()
-        # plt.xlabel(self.xlabel)
-        # plt.ylabel(self.ylabel)
-        # plt.title(self.title)
         plt.legend()
     
     def gaussian_plot(self):

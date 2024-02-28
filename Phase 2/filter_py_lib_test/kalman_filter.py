@@ -1,5 +1,11 @@
 '''
-Module of Kalman filter computation
+Module name
+----------
+kalman_filter
+
+Module summary 
+---------------
+All the computation on matrix level is carried out in this module
 
 Author 
 ------
