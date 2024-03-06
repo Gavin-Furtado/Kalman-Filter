@@ -1,45 +1,35 @@
+import tkinter
 import customtkinter as ctk
-# from tkinter import simpledialog
+import kf_algorithm
 
-# def get_numbers():
-#     num1 = simpledialog.askfloat("Enter Number 1", "Enter the first number:")
-#     num2 = simpledialog.askfloat("Enter Number 2", "Enter the second number:")
-#     num3 = simpledialog.askfloat("Enter Number 3", "Enter the third number:")
-#     if num1 is not None and num2 is not None and num3 is not None:
-#         print("Numbers entered:", num1, num2, num3)
-#     else:
-#         print("User canceled")
+def RunProgram():
+    try:
+        val_1 = int(sample_size.get())
+        kf_algorithm.main(val_1)
+    except ValueError:
+        ctk.messagebox.showerror('Error','Please Enter a valid number')
 
-# # Create main window
-# root = tk.Tk()
-# root.title("Number Input")
 
-# # Create button to get numbers
-# button = tk.Button(root, text="Enter Numbers", command=get_numbers)
-# button.pack(pady=10)
 
-# # Run the application
-# root.mainloop()
+# Apperance settings
+ctk.set_appearance_mode('System')
+ctk.set_default_color_theme('blue')
 
-ctk.set_appearance_mode('system')
-ctk.set_default_color_theme('drak-blue')
+# App frame
+app = ctk.CTk()
+app.geometry('720x480')
+app.title('Kalman Filter Algorithm')
 
-root = ctk.CTk()
-root.geometry('600x400')
+#Adding UI elements
+label_1=ctk.CTkLabel(app, text="Sample Size")
+label_1.pack(padx=10,pady=10)
 
-def parameters():
-    print('Please enter the values')
+sample_size = ctk.CTkEntry(app,width=200, height=30)
+sample_size.pack(padx=10,pady=10)
 
-frame=ctk.CTkFrame(master=root)
-frame.pack(pady=20, padx=60, fill='both', expand=True)
+# Plot Button
+plot = ctk.CTkButton(app, text="Plot Graph",command=RunProgram)
+plot.pack(padx=10,pady=10)
 
-label = ctk.CTkLabel(master=frame, text='Kalman estimation')
-label.pack(pady=12, padx=10)
-
-number_of_samples = ctk.CTkEntry(master=frame, placeholder_text='Number of Samples') 
-number_of_samples.pack(pady=12,padx=10)
-
-button = ctk.CTkButton(master=frame, text='Run Kalman Filter')
-number_of_samples.pack(pady=12,padx=10)
-
-root.mainloop()
+# Run app
+app.mainloop()

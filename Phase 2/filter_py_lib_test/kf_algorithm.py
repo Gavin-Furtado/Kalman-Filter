@@ -82,14 +82,14 @@ def visulaise_data(position, velocity, acceleration, noise):
 
 data = {'Current State':[],'Predicted State':[],'Updated State':[]}
 
-def main():
+def main(val_1):
     '''
     The main function of the code.
 
     It contains the high level logic.
     '''
     ## Sensor data ##
-    sensor = sen.PositionSensor(noise_mean=1.0, noise_std=1.5, dt=dt ,sample_size=10) #input
+    sensor = sen.PositionSensor(noise_mean=1.0, noise_std=1.5, dt=dt ,sample_size=val_1) #input
     position, velocity, acceleration, noise = sensor.data_set()
 
     ## Data Visualisation ##
