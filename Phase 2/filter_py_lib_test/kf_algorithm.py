@@ -82,14 +82,15 @@ def visulaise_data(position, velocity, acceleration, noise):
 
 data = {'Current State':[],'Predicted State':[],'Updated State':[]}
 
-def main(val_1):
+def main(val_1, n_mean, n_std, initial_P, R_matrix):
     '''
     The main function of the code.
 
     It contains the high level logic.
     '''
     ## Sensor data ##
-    sensor = sen.PositionSensor(noise_mean=1.0, noise_std=1.5, dt=dt ,sample_size=val_1) #input
+    # sensor = sen.PositionSensor(noise_mean=1.0, noise_std=1.5, dt=dt ,sample_size=val_1) #input
+    sensor = sen.PositionSensor(noise_mean=n_mean, noise_std=n_std, dt=dt ,sample_size=val_1)
     position, velocity, acceleration, noise = sensor.data_set()
 
     ## Data Visualisation ##
@@ -97,7 +98,8 @@ def main(val_1):
 
     ## Initalisation ##
     initialisation = kal_fil.kalman_initial(position,velocity, acceleration)
-    P_initial = initialisation.P_initial(2,1,8,7) #input
+    # P_initial = initialisation.P_initial(2,1,8,7) #input
+    P_initial = initialisation.P_initial(initial_P[0],initial_P[1],initial_P[2],initial_P[3])
     X_initial = initialisation.X_initial()
     
     P_prev = P_initial
@@ -121,7 +123,8 @@ def main(val_1):
         predicted_process_covariance = predict.P_predicted()
 
         # Kalman Gain
-        R = kal_fil.R_matrix(3,1,2,1) #input
+        # R = kal_fil.R_matrix(3,1,2,1) #input
+        R = kal_fil.R_matrix(R_matrix[0],R_matrix[1],R_matrix[2],R_matrix[3])
         K = kal_fil.KalmanGain(predicted_process_covariance,R)
         
         # Measurement input
