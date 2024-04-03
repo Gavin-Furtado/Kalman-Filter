@@ -1,11 +1,13 @@
-# Kalman Filter Algorithm  
+# Kalman Filter Simulator  
 
 ## Project Overview
-This project is designed for the purpose of learning the mathematics, coding and implementation of Kalman filter algorithm.
+The Kalman Filter Simulator was aimed to enhance the accuracy of the accelerometer (Position Sensor) data, since all sensors have measurement errors that make unprocessed data unreliable.
 
-Kalman filter is a commonly used state estimation algorithm for data from electronic sensors. 
+Through the application of Kalman filter algorithm on the sensor data the python based simulator effectively predicts and corrects the errors, enhancing the reliability of the data set.
 
-It predicts the sensor value based on the past, current readings and gives a wieght(trust factor) between the measurement and prediction.
+The sensor data was modelled based on simple Netwonian physics formulae along with predefined uncertainties and noise characteristics. 
+
+The end result of this project was comparison graphs illustrating the difference between the sensor data before and after the application of the Kalman Filter Algorithm, demonstrating the effectiveness of the algorithm. Overall, the implementation of the Kalman filter enhanced the accuracy of the sensor data.
 
 This project is divided into two phases:
 - Phase 1: Translation lecture examples into functional code
@@ -16,7 +18,7 @@ Graphical representation of Kalman filter algorithm.
 
 ## Project Timeline
 Phase 1️⃣:  week 2 of October 2023 to week 3 of November 2023   
-Phase 2️⃣:  week 3 of November 2023 to Present
+Phase 2️⃣:  week 3 of November 2023 to March 2024
 
 ## Results
 ### Phase 1
